@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}Sobre nosotros{% endblock title %}
+
+
+{% block content %}
+<h1>Esta es nuestra página de información</h1>
+{% if user.is_authenticated %}
+<hr>
+<p>El presente proyecto fin de máster se integra dentro del contexto de la generación de nuevas herramientas para la
+    explotación del cada vez más presente “dato” por parte de las direcciones deportivas de clubes de fútbol
+    profesional.</p>
+<p>La propuesta que se ha desarrollado trata sobre la creación de producto web que permite ingestar, almacenar, procesar
+    y analizar múltiples fuentes de datos, tanto objetivas como subjetivas, sobre jugadores (propios y ajenos)
+    ofreciendo además diversas interfaces para la explotación del dato en un entorno unificado.</p>
+<p>La idea, por tanto, es presentar una herramienta que integre todo el flujo de datos que pueda tener impacto a la hora
+    de la evaluación de rendimientos de jugadores propios y externos, y que pueda ser un factor de ayuda en la toma de
+    decisiones.</p>
+<i>Palabras clave: Analítica avanzada, Big Data, Fútbol, Aplicación web, Scouting</i>
+{% endif %}
+{% endblock content %}
