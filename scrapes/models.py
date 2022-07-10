@@ -1,6 +1,4 @@
-from __future__ import _Feature
 from django.db import models
-from django.forms import CharField
 from django.utils import timezone
 
 import uuid
@@ -36,7 +34,7 @@ class ScrapeJob(models.Model):
     scraped_from = models.CharField(max_length=50)
     season_from = models.CharField(max_length=30)
     state = models.CharField(max_length=2, choices=STATE_CHOICES, default=OK)
-    number_errors = models.IntegerField(default=0, blank=True)()
+    number_errors = models.IntegerField(default=0, blank=True)
     completed_date = models.DateTimeField(default=timezone.now)
 
     class Meta:

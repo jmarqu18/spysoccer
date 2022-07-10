@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     # Local
     "pages.apps.PagesConfig",
     "accounts.apps.AccountsConfig",
-    "scrapes.apps.AccountsConfig",
+    "scrapes.apps.ScrapesConfig",
 ]
 
 MIDDLEWARE = [
