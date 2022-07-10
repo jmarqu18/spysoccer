@@ -50,13 +50,13 @@ class ScrapeJob(models.Model):
 class PlayerUnderstat(models.Model):
     """Model definition for PlayerUnderstat."""
 
-    us_player_id = models.IntegerField(default=0, blank=True)()
+    us_player_id = models.IntegerField(default=0, blank=True)
     us_player_name = models.CharField(max_length=250)
     us_position = models.CharField(max_length=10)
     us_team = models.CharField(max_length=150)
     us_season = models.CharField(max_length=30)
     us_comp = models.CharField(max_length=50)
-    us_key_passes = models.IntegerField(default=0, blank=True)(default=0, blank=True)
+    us_key_passes = models.IntegerField(default=0, blank=True)
     us_xGChain = models.FloatField(default=0, blank=True)
     us_xGBuildup = models.FloatField(default=0, blank=True)
     us_key_passes_90 = models.FloatField(default=0, blank=True)
@@ -128,7 +128,7 @@ class PlayerFbrefGK(models.Model):
     fb_PK_m = models.FloatField(default=0, blank=True)
     fb_PSxG = models.FloatField(default=0, blank=True)
     fb_PSxG_vs_SoT = models.FloatField(default=0, blank=True)
-    fb_PSxG__plus__vs__minus_ = models.FloatField(default=0, blank=True)
+    fb_PSxG_plus_vs_minus = models.FloatField(default=0, blank=True)
     fb_Launched_Cmp = models.IntegerField(default=0, blank=True)
     fb_Launched_Att = models.IntegerField(default=0, blank=True)
     fb_Launched_Cmp_perc = models.FloatField(default=0, blank=True)
@@ -155,7 +155,7 @@ class PlayerFbrefGK(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["fb_player_id", "fb_season", "fb_team"],
-                name="unique_player_id_season_team_combination_fbref",
+                name="unique_player_id_season_team_combination_fbref_gk",
             )
         ]
 
@@ -371,7 +371,7 @@ class PlayerFbref(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["fb_player_id", "fb_season", "fb_team"],
-                name="unique_player_id_season_team_combination_fbref",
+                name="unique_player_id_season_team_combination_fbref_players",
             )
         ]
 
