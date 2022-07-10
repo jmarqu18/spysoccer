@@ -8,9 +8,11 @@ class ScrapeJob(models.Model):
     # Select para el estatus del scrape
     OK = "OK"
     ERROR = "KO"
+    EN_PROCESO = "IN"
     STATE_CHOICES = [
         (OK, "Completado"),
         (ERROR, "Con errores"),
+        (EN_PROCESO, "En proceso"),
     ]
 
     # Opciones para la web de origen
@@ -33,7 +35,7 @@ class ScrapeJob(models.Model):
     origin = models.CharField(max_length=2, choices=ORIGIN_CHOICES, default=FBREF)
     scraped_from = models.CharField(max_length=50)
     season_from = models.CharField(max_length=30)
-    state = models.CharField(max_length=20, choices=STATE_CHOICES, default=OK)
+    state = models.CharField(max_length=20, choices=STATE_CHOICES, default=EN_PROCESO)
     number_errors = models.IntegerField(default=0, blank=True)
     completed_date = models.DateTimeField(default=timezone.now)
 
@@ -389,7 +391,7 @@ class PlayerFbref(models.Model):
 
 
 class PlayerCapology(models.Model):
-    ca_player_id = models.IntegerField(blank=False)
+    ca_player_id = models.CharField(max_length=150, blank=False)
     ca_player_name = models.CharField(max_length=120, blank=False)
     ca_salary = models.DecimalField(max_digits=12, decimal_places=2)
     ca_expiration = models.DateField(blank=True)

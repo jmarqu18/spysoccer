@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from django.core.files import File
+
 
 # Base
 import pandas as pd
@@ -37,7 +37,7 @@ def get_understat_player_data_by_teams(season):
     # Generamos una lista vacía para albergar los df de cada competicion
     list_dfs = []
     for i, comp in enumerate(comps):
-        print("Extrayendo datos de Understat de {}.".format(comps_name[i]))
+        print("Extrayendo datos de {}.".format(comps_name[i]))
 
         # Construimos las Urls de las ligas
         url = "{0}/{1}/{2}".format(url_base, comp, season_x)
@@ -195,10 +195,6 @@ class Command(BaseCommand):
         scraped_from_x = "Understat - From Teams"
 
         # Creamos un archivo csv con el resultado del scrape
-        # df_temp.to_csv("us_temp.csv", decimal=",", index=False)
-
-        # with open("/us_temp.csv") as f:
-        # self.license_file.save("test.csv", File(f))
 
         # Borramos los datos que pueda haber sobre esa temporada previos
         ScrapeJob.objects.filter(origin="US", season_from=season_x).delete()

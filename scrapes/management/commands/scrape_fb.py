@@ -37,7 +37,7 @@ def get_understat_player_data_by_teams(season):
     # Generamos una lista vacía para albergar los df de cada competicion
     list_dfs = []
     for i, comp in enumerate(comps):
-        print("Extrayendo datos de Understat de {}.".format(comps_name[i]))
+        print("Extrayendo datos de {}.".format(comps_name[i]))
 
         # Construimos las Urls de las ligas
         url = "{0}/{1}/{2}".format(url_base, comp, season_x)
@@ -195,10 +195,6 @@ class Command(BaseCommand):
         scraped_from_x = "Understat - From Teams"
 
         # Creamos un archivo csv con el resultado del scrape
-        # df_temp.to_csv("us_temp.csv", decimal=",", index=False)
-
-        # with open("/us_temp.csv") as f:
-        # self.license_file.save("test.csv", File(f))
 
         # Borramos los datos que pueda haber sobre esa temporada previos
         ScrapeJob.objects.filter(origin="US", season_from=season_x).delete()
@@ -250,10 +246,7 @@ class Command(BaseCommand):
                 n_errores += 1
 
         # Preparamos los datos apra actualizar el estado del Job de Scraping
-        if n_errores == 0:
-            state_x = "OK"
-        else:
-            state_x = "KO"
+        state_x = "Completado" if n_errores == 0 else "Con errores"
         scrape_data = {
             "number_errors": n_errores,
             "completed_date": timezone.now(),
