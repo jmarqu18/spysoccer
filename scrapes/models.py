@@ -33,7 +33,7 @@ class ScrapeJob(models.Model):
     origin = models.CharField(max_length=2, choices=ORIGIN_CHOICES, default=FBREF)
     scraped_from = models.CharField(max_length=50)
     season_from = models.CharField(max_length=30)
-    state = models.CharField(max_length=2, choices=STATE_CHOICES, default=OK)
+    state = models.CharField(max_length=20, choices=STATE_CHOICES, default=OK)
     number_errors = models.IntegerField(default=0, blank=True)
     completed_date = models.DateTimeField(default=timezone.now)
 
@@ -42,9 +42,7 @@ class ScrapeJob(models.Model):
         verbose_name_plural = "Web Scraping Jobs"
 
     def __str__(self):
-        return "{} - {} - {".format(
-            self.scraped_from, self.season_from, self.completed_date
-        )
+        return "{} - {}".format(self.scraped_from, self.season_from)
 
 
 class PlayerUnderstat(models.Model):
@@ -429,8 +427,8 @@ class PlayerTransfermarkt(models.Model):
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Player data from Capology"
-        verbose_name_plural = "Players data from Capology"
+        verbose_name = "Player data from Transfermarkt"
+        verbose_name_plural = "Players data from Transfermarkt"
 
     def __str__(self):
         return "{} - {}".format(self.tm_player_name, self.tm_current_club)

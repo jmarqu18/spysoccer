@@ -5,6 +5,8 @@ from django.utils import timezone
 import pandas as pd
 import json
 import uuid
+import lxml
+from tqdm import tqdm
 from cleantext import clean
 
 import traceback
@@ -34,7 +36,7 @@ def get_understat_player_data_by_teams(season):
     # Generamos una lista vacía para albergar los df de cada competicion
     list_dfs = []
     for i, comp in enumerate(comps):
-        print("Comenzamos a extraer datos de {}.".format(comps_name[i]))
+        print("Extrayendo datos de {}.".format(comps_name[i]))
 
         # Construimos las Urls de las ligas
         url = "{0}/{1}/{2}".format(url_base, comp, season_x)
@@ -191,18 +193,38 @@ class Command(BaseCommand):
         scrape_init = timezone.now()
         scraped_from_x = "Understat - From Teams"
 
-        df_temp = get_understat_player_data_by_teams(season_x)
-
         # Creamos un archivo csv con el resultado del scrape
         # df_temp.to_csv("test.csv", decimal=",", index=False)
 
         # Borramos los datos que pueda haber sobre esa temporada previos
+        ScrapeJob.objects.filter(origin="US", season_from=season_x).delete()
+
+        # Creamos una linea en el trabajo de scraping
+        try:
+            new_job = ScrapeJob.objects.create(
+                scrape_job_id=scrape_job_uuid,
+                created_date=scrape_init,
+                mode=mode_x,
+                origin="US",
+                scraped_from=scraped_from_x,
+                season_from=season_x,
+            )
+        except:
+            traceback.print_exc()
+            print("Error al crear linea de scrape_job")
+
+        try:
+            df_temp = get_understat_player_data_by_teams(season_x)
+        except:
+            print("Error del código de web scraping")
 
         n_errores = 0
-        for i in range(len(df_temp)):
+
+        print("Guardando información de los jugadores en la base de datos")
+        for i in tqdm(range(len(df_temp))):
             try:
                 PlayerUnderstat.objects.get_or_create(
-                    us_id_player=df_temp.iloc[i, 0],
+                    us_player_id=df_temp.iloc[i, 0],
                     us_player_name=df_temp.iloc[i, 1],
                     us_position=df_temp.iloc[i, 2],
                     us_team=df_temp.iloc[i, 3],
@@ -214,28 +236,23 @@ class Command(BaseCommand):
                     us_key_passes_90=df_temp.iloc[i, 9],
                     us_xGChain_90=df_temp.iloc[i, 10],
                     us_xGBuildup_90=df_temp.iloc[i, 11],
-                    scrape_job=scrape_job_uuid,
+                    scrape_job=new_job,
+                    created_data=timezone.now(),
                 )
-                print("%s añadido" % (df_temp.iloc[i, 1],))
+                # print("%s añadido" % (df_temp.iloc[i, 1],))
             except:
                 traceback.print_exc()
                 print("%s ya existe" % (df_temp.iloc[i, 1],))
                 n_errores += 1
 
-        # Creamos una linea en el trabajo de scraping
-        try:
-            ScrapeJob.objects.create(
-                scrape_job_id=scrape_job_uuid,
-                created_date=scrape_init,
-                mode=mode_x,
-                scraped_from=scraped_from_x,
-                season_from=season_x,
-                state="OK" if n_errores == 0 else "KO",
-                numero_errores=n_errores,
-                completed_date=timezone.now(),
-            )
-        except:
-            traceback.print_exc()
-            print("Error al crear linea de scrape_job")
+        # Preparamos los datos apra actualizar el estado del Job de Scraping
+        state_x = "Completado" if n_errores == 0 else "Con errores"
+        scrape_data = {
+            "number_errors": n_errores,
+            "completed_date": timezone.now(),
+            "state": state_x,
+        }
+        # Actualizamos el Job
+        ScrapeJob.objects.filter(scrape_job_id=new_job.pk).update(**scrape_data)
 
-        self.stdout.write("Job completado")
+        self.stdout.write("Job completado con {} errores".format(n_errores))
