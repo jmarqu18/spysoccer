@@ -112,7 +112,7 @@ def get_capology_players(season):
 
 
 class Command(BaseCommand):
-    help = "collect players data from Understat.com"
+    help = "collect players data from Capology.com"
     # define logic of command
 
     def add_arguments(self, parser):
