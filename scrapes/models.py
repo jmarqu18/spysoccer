@@ -17,11 +17,13 @@ class ScrapeJob(models.Model):
 
     # Opciones para la web de origen
     FBREF = "FB"
+    FBREF_GK = "FG"
     UNDERSTAT = "US"
     TRANSFERMARKT = "TM"
     CAPOLOGY = "CA"
     ORIGIN_CHOICES = [
         (FBREF, "FB"),
+        (FBREF_GK, "FG"),
         (UNDERSTAT, "US"),
         (TRANSFERMARKT, "TM"),
         (CAPOLOGY, "CA"),
@@ -81,7 +83,7 @@ class PlayerUnderstat(models.Model):
 
 
 class PlayerFbrefGK(models.Model):
-    fb_player_id = models.IntegerField(blank=False)
+    fb_player_id = models.CharField(max_length=30, blank=False)
     fb_player_name = models.CharField(max_length=120, blank=False)
     fb_season = models.CharField(max_length=30)
     fb_nation = models.CharField(max_length=3)
@@ -103,7 +105,7 @@ class PlayerFbrefGK(models.Model):
     fb_Gls_90 = models.FloatField(default=0, blank=True)
     fb_Ast_90 = models.FloatField(default=0, blank=True)
     fb_G_plus_A_90 = models.FloatField(default=0, blank=True)
-    fb_G_plus_A_minus_PK = models.IntegerField(default=0, blank=True)
+    fb_G_plus_A_minus_PK = models.FloatField(default=0, blank=True)
     fb_xG = models.FloatField(default=0, blank=True)
     fb_npxG = models.FloatField(default=0, blank=True)
     fb_xA = models.FloatField(default=0, blank=True)
@@ -162,27 +164,16 @@ class PlayerFbrefGK(models.Model):
     def __str__(self):
         return "{} - {} ({})".format(self.fb_player_name, self.fb_team, self.fb_season)
 
-    @property
-    def age(self):
-        return (
-            timezone.now().year
-            - self.fb_born.year
-            - (
-                (timezone.now().month, timezone.now().day)
-                < (self.fb_born.month, self.fb_born.day)
-            )
-        )
-
 
 class PlayerFbref(models.Model):
-    fb_player_id = models.IntegerField(blank=False)
+    fb_player_id = models.CharField(max_length=20, blank=False)
     fb_player_name = models.CharField(max_length=120, blank=False)
     fb_season = models.CharField(max_length=30)
     fb_nation = models.CharField(max_length=3)
     fb_pos = models.CharField(max_length=10, verbose_name="fb_position")
     fb_team = models.CharField(max_length=50, blank=True)
     fb_comp = models.CharField(max_length=50, verbose_name="fb_competition")
-    fb_born = models.DateField(blank=True)
+    fb_born = models.CharField(max_length=4, blank=True)
     fb_playing_time_MP = models.IntegerField(default=0, blank=True)
     fb_playing_time_starts = models.IntegerField(default=0, blank=True)
     fb_playing_time_min = models.IntegerField(default=0, blank=True)
@@ -197,7 +188,7 @@ class PlayerFbref(models.Model):
     fb_Gls_90 = models.FloatField(default=0, blank=True)
     fb_Ast_90 = models.FloatField(default=0, blank=True)
     fb_G_plus_A_90 = models.FloatField(default=0, blank=True)
-    fb_G_plus_A_minus_PK = models.IntegerField(default=0, blank=True)
+    fb_G_plus_A_minus_PK = models.FloatField(default=0, blank=True)
     fb_xG = models.FloatField(default=0, blank=True)
     fb_npxG = models.FloatField(default=0, blank=True)
     fb_xA = models.FloatField(default=0, blank=True)
@@ -214,10 +205,8 @@ class PlayerFbref(models.Model):
     fb_SoT_90 = models.FloatField(default=0, blank=True)
     fb_G_vs_Sh = models.FloatField(default=0, blank=True)
     fb_G_vs_SoT = models.FloatField(default=0, blank=True)
-    fb_Dist = models.IntegerField(default=0, blank=True)
+    fb_Dist = models.FloatField(default=0, blank=True)
     fb_FK = models.IntegerField(default=0, blank=True)
-    fb_PK = models.IntegerField(default=0, blank=True)
-    fb_PKatt = models.IntegerField(default=0, blank=True)
     fb_npxG_vs_Sh = models.FloatField(default=0, blank=True)
     fb_G_minus_xG = models.FloatField(default=0, blank=True)
     fb_npxG_minus_xG = models.FloatField(default=0, blank=True)
@@ -377,17 +366,6 @@ class PlayerFbref(models.Model):
 
     def __str__(self):
         return "{} - {} ({})".format(self.fb_player_name, self.fb_team, self.fb_season)
-
-    @property
-    def age(self):
-        return (
-            timezone.now().year
-            - self.fb_born.year
-            - (
-                (timezone.now().month, timezone.now().day)
-                < (self.fb_born.month, self.fb_born.day)
-            )
-        )
 
 
 class PlayerCapology(models.Model):
