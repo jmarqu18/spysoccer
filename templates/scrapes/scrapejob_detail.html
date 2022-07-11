@@ -1,0 +1,10 @@
+<!-- templates/books/book_detail.html -->
+{% extends "_base.html" %}
+{% block title %}{{ scrapejob }}{% endblock title %}
+{% block content %}
+<div class="scrapejob-detail">
+    <h2><a href="">{{ scrapejob }}</a></h2>
+    <p>Fecha de creación: {{ scrapejob.created_date }}</p>
+    <p>Datos extraidos: {{ scrapejob.number_players }}</p>
+</div>
+{% endblock content %}

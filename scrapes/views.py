@@ -1,9 +1,16 @@
 # scrapes/views.py
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .models import ScrapeJob
 
 
 class ScrapesListView(ListView):
     model = ScrapeJob
-    template_name = "scrapes/scrapes_list.html"
+    context_object_name = "scrapejobs_list"
+    template_name = "scrapes/scrapejob_list.html"
+
+
+class ScrapesDetailView(DetailView):
+    model = ScrapeJob
+    context_object_name = "scrapejob"
+    template_name = "scrapes/scrapejob_detail.html"

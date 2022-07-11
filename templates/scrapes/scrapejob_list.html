@@ -2,9 +2,9 @@
 {% extends "_base.html" %}
 {% block title %}Scrapes realizados{% endblock title %}
 {% block content %}
-{% for book in object_list %}
+{% for scrapes in scrapejobs_list %}
 <div>
-    <h2><a href="">{{ scrapes.title }}</a></h2>
+    <h2><a href="{{ scrapes.get_absolute_url }}">{{ scrapes }}</a></h2>
 </div>
 {% endfor %}
 {% endblock content %}

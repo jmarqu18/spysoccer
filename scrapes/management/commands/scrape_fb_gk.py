@@ -290,7 +290,9 @@ class Command(BaseCommand):
             state_x = "OK"
         else:
             state_x = "KO"
+        n_rows = len(df_temp) - n_errores
         scrape_data = {
+            "number_players": n_rows,
             "number_errors": n_errores,
             "completed_date": timezone.now(),
             "state": state_x,

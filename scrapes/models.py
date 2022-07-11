@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 import uuid
@@ -44,6 +45,9 @@ class ScrapeJob(models.Model):
     state = models.CharField(
         max_length=20, choices=STATE_CHOICES, default=EN_PROCESO, verbose_name="Estado"
     )
+    number_players = models.IntegerField(
+        default=0, blank=True, verbose_name="Jugadores extraídos"
+    )
     number_errors = models.IntegerField(default=0, blank=True, verbose_name="Errores")
     completed_date = models.DateTimeField(
         default=timezone.now, verbose_name="Fecha de finalización"
@@ -55,6 +59,9 @@ class ScrapeJob(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.scraped_from, self.season_from)
+
+    def get_absolute_url(self):
+        return reverse("scrapes_detail", args=[str(self.pk)])
 
 
 class PlayerUnderstat(models.Model):
