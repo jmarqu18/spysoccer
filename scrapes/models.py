@@ -58,6 +58,7 @@ class ScrapeJob(models.Model):
 
 
 class PlayerUnderstat(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     us_player_id = models.IntegerField(default=0, blank=True)
     us_player_name = models.CharField(max_length=250)
     us_position = models.CharField(max_length=10)
@@ -89,6 +90,7 @@ class PlayerUnderstat(models.Model):
 
 
 class PlayerFbrefGK(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     fb_player_id = models.CharField(max_length=30, blank=False)
     fb_player_name = models.CharField(max_length=120, blank=False)
     fb_season = models.CharField(max_length=30)
@@ -157,8 +159,8 @@ class PlayerFbrefGK(models.Model):
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Goalkeeper data from FBRef"
-        verbose_name_plural = "Goalkeepers data from FBRef"
+        verbose_name = "Datos de portero de FBRef"
+        verbose_name_plural = "Datos de porteros de FBRef"
 
         constraints = [
             models.UniqueConstraint(
@@ -172,6 +174,7 @@ class PlayerFbrefGK(models.Model):
 
 
 class PlayerFbref(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     fb_player_id = models.CharField(max_length=20, blank=False)
     fb_player_name = models.CharField(max_length=120, blank=False)
     fb_season = models.CharField(max_length=30)
@@ -360,8 +363,8 @@ class PlayerFbref(models.Model):
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Player data from FBRef"
-        verbose_name_plural = "Players data from FBRef"
+        verbose_name = "Datos de jugador de FBRef"
+        verbose_name_plural = "Datos de jugadores de FBRef"
 
         constraints = [
             models.UniqueConstraint(
@@ -375,6 +378,7 @@ class PlayerFbref(models.Model):
 
 
 class PlayerCapology(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ca_player_id = models.CharField(max_length=150, blank=False)
     ca_player_name = models.CharField(max_length=120, blank=False)
     ca_salary = models.DecimalField(max_digits=12, decimal_places=2)
@@ -387,14 +391,15 @@ class PlayerCapology(models.Model):
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Player data from Capology"
-        verbose_name_plural = "Players data from Capology"
+        verbose_name = "Datos de jugador de Capology"
+        verbose_name_plural = "Datos de jugadores de Capology"
 
     def __str__(self):
         return "{} - {} ({})".format(self.ca_player_name, self.ca_team, self.ca_season)
 
 
 class PlayerTransfermarkt(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tm_player_id = models.IntegerField(blank=False)
     tm_player_name = models.CharField(max_length=120, blank=False)
     tm_comp = models.CharField(max_length=50, blank=False)
@@ -413,8 +418,8 @@ class PlayerTransfermarkt(models.Model):
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Player data from Transfermarkt"
-        verbose_name_plural = "Players data from Transfermarkt"
+        verbose_name = "Datos de jugador de Transfermarkt"
+        verbose_name_plural = "Datos de jugadores Transfermarkt"
 
     def __str__(self):
         return "{} - {}".format(self.tm_player_name, self.tm_current_club)

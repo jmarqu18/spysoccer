@@ -1,3 +1,9 @@
-from django.shortcuts import render
+# scrapes/views.py
+from django.views.generic import ListView
 
-# Create your views here.
+from .models import ScrapeJob
+
+
+class ScrapesListView(ListView):
+    model = ScrapeJob
+    template_name = "scrapes/scrapes_list.html"
