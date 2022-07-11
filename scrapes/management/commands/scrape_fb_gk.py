@@ -4,7 +4,7 @@ from django.core.files import File
 
 # Base
 import pandas as pd
-import json
+import numpy as np
 import uuid
 import lxml
 from tqdm import tqdm
@@ -16,167 +16,155 @@ import traceback
 import requests
 from bs4 import BeautifulSoup
 
-from scrapes.models import PlayerUnderstat, ScrapeJob
+from scrapes.models import PlayerFbrefGK, ScrapeJob
 
 
-def get_understat_player_data_by_teams(season):
-    # Preparamos unas listas para recorrer las ligas (y sus nombres)
-    comps = ["La_liga", "EPL", "Bundesliga", "Serie_A", "Ligue_1"]
-    comps_name = ["La Liga", "Premier League", "Bundesliga", "Serie A", "Ligue 1"]
+def get_fbref_player_data(season, only_gk=False):
 
-    url_base = "https://understat.com/league"
+    # Variables iniciales
+    url_base = "https://fbref.com/en/comps/Big5/"
 
-    # Definimos las variables base
-    url_base_teams = "https://understat.com/team/"
-
-    season_x = season.split("-")[0]
-
-    # Generamos una lista vacía para albergar las url de cada competicion
-    list_urls_leagues = []
-
-    # Generamos una lista vacía para albergar los df de cada competicion
-    list_dfs = []
-    for i, comp in enumerate(comps):
-        print("Extrayendo datos de {}.".format(comps_name[i]))
-
-        # Construimos las Urls de las ligas
-        url = "{0}/{1}/{2}".format(url_base, comp, season_x)
-
-        # Scrapeamos buscando los nombres de los equipos de la liga en dicha temporada
-        res = requests.get(url)
-        soup = BeautifulSoup(res.content, "lxml")
-
-        # Los datos están en el script con Var TeamData
-        string = soup.find_all("script")[2].string
-
-        # Buscamos los simbolos de comienzo y fin del json
-        ind_start = string.index("('") + 2
-        ind_end = string.index("')")
-
-        # Limpiamos el texto para convertirlo a json luego
-        json_data = string[ind_start:ind_end]
-        json_data = json_data.encode("utf8").decode("unicode_escape")
-
-        # Convertir string a formato json
-        teams_data = json.loads(json_data)
-
-        # Recorremos el json montado para saber los nombres de los equipos
-        for key in teams_data.keys():  # Equipos
-            team = teams_data[key]["title"].replace(" ", "_")
-            url_team = "{0}{1}/{2}".format(url_base_teams, team, season_x)
-
-            # generamos un nombre para este df de equipo
-            nombre_df = "df_{0}_{1}".format(team, season)
-
-            # Web scraping from understat.com
-            res = requests.get(url_team)
-            soup = BeautifulSoup(res.content, "lxml")
-
-            # print("Extrayendo datos de {}.".format(team))
-
-            # Var Player data en json
-            string = soup.find_all("script")[3].string
-
-            # localizamos los inicio y fin del json
-            ind_start = string.index("('") + 2
-            ind_end = string.index("')")
-
-            # Limpiamos el texto para convertirlo a json luego
-            json_data = string[ind_start:ind_end]
-            json_data = json_data.encode("utf8").decode("unicode_escape")
-
-            # Convertir string a formato json
-            data = json.loads(json_data)
-
-            # creamos las listas vacias con las variables que queremos
-            id_player_us = []
-            player_name = []
-            team = []
-            key_passes = []
-            xGChain = []
-            xGBuildup = []
-            time = []
-            position = []
-
-            # poblamos las listas que hemos preparado con los datos de cada jugador
-            for player in data:
-                id_player_us.append(player["id"])
-                player_name.append(clean(player["player_name"], lower=False))
-                team.append(clean(player["team_title"], lower=False))
-                key_passes.append(int(player["key_passes"]))
-                xGChain.append(float(player["xGChain"]))
-                xGBuildup.append(float(player["xGBuildup"]))
-                time.append(int(player["time"]))
-                position.append(player["position"])
-
-            # Creamos el dataframe
-            columnas = [
-                "us_id_player",
-                "us_player_name",
-                "us_team",
-                "us_key_passes",
-                "us_xGChain",
-                "us_xGBuildup",
-                "time",
-                "us_position",
-            ]
-            globals()[nombre_df] = pd.DataFrame(
-                [
-                    id_player_us,
-                    player_name,
-                    team,
-                    key_passes,
-                    xGChain,
-                    xGBuildup,
-                    time,
-                    position,
-                ],
-                index=columnas,
-            ).T
-
-            # Generamos columnas extra (por 90 min)
-            globals()[nombre_df]["us_key_passes_90"] = (
-                globals()[nombre_df]["us_key_passes"] / globals()[nombre_df]["time"]
-            ) * 90
-            globals()[nombre_df]["us_xGChain_90"] = (
-                globals()[nombre_df]["us_xGChain"] / globals()[nombre_df]["time"]
-            ) * 90
-            globals()[nombre_df]["us_xGBuildup_90"] = (
-                globals()[nombre_df]["us_xGBuildup"] / globals()[nombre_df]["time"]
-            ) * 90
-
-            # Añadimos las columnas con la temporada y la competición
-            globals()[nombre_df]["us_season"] = season
-            globals()[nombre_df]["us_comp"] = comps_name[i]
-
-            list_dfs.append(globals()[nombre_df])
-
-    # Unimos los df resultantes por equipo
-    df_understat = pd.concat(list_dfs).reset_index(drop=True)
-
-    # Ordenamos las columnas, y eliminamos "time" que no nos hace falta
-    df_understat = df_understat[
-        [
-            "us_id_player",
-            "us_player_name",
-            "us_position",
-            "us_team",
-            "us_season",
-            "us_comp",
-            "us_key_passes",
-            "us_xGChain",
-            "us_xGBuildup",
-            "us_key_passes_90",
-            "us_xGChain_90",
-            "us_xGBuildup_90",
-        ]
+    list_urls = [
+        "/stats/players/Big-5-European-Leagues-Stats#stats_standard",
+        "/shooting/players/Big-5-European-Leagues-Stats#stats_shooting",
+        "/passing/players/Big-5-European-Leagues-Stats#stats_passing",
+        "/passing_types/players/Big-5-European-Leagues-Stats#stats_passing_types",
+        "/gca/jugadores/players/Big-5-European-Leagues-Stats#stats_gca",
+        "/defense/jugadores/players/Big-5-European-Leagues-Stats#stats_defense",
+        "/possession/jugadores/players/Big-5-European-Leagues-Stats#stats_possession",
+        "/playingtime/jugadores/players/Big-5-European-Leagues-Stats#stats_playing_time",
+        "/misc/jugadores/players/Big-5-European-Leagues-Stats#stats_misc",
+    ]
+    list_urls_gk = [
+        "/stats/players/Big-5-European-Leagues-Stats#stats_standard",
+        "/keepers/players/Big-5-European-Leagues-Stats#stats_keeper",
+        "/keepersadv/players/Big-5-European-Leagues-Stats#stats_keeper_adv",
     ]
 
-    return df_understat
+    # unimos las dos listas en una lista
+    urls = [list_urls, list_urls_gk]
+
+    if only_gk == True:
+        lista_urls = urls[1]
+    else:
+        lista_urls = urls[0]
+
+    # Reinicializamos la variable resultante
+    list_df = []
+    for url in lista_urls:
+        # creamos el nombre para el df
+        nombre_df = "df_{0}_{1}".format(url.split("#")[1], season)
+        url_complete = "{0}{1}{2}".format(url_base, season, url)
+
+        print("Extrayendo datos de FBRef del Big5 sobre: {}".format(url.split("#")[1]))
+
+        # Request
+        r = requests.get(url_complete)
+        soup = BeautifulSoup(r.content, "html.parser")
+
+        # Usamos globals() para crear los nombres de los df de un modo dinámico
+        globals()[nombre_df] = pd.read_html(
+            str(
+                soup.find(
+                    "table",
+                    class_="min_width sortable stats_table min_width shade_zero",
+                )
+            )
+        )[0]
+
+        # Limpieza del DF
+        # generamos una lista vacia para guardar los nombres combinados de las columnas
+        columnas = []
+        # recorremos las columnas del df y combinamos los nombres omitiendo las columnas "Unnamed"
+        for col1, col2 in globals()[nombre_df].columns:
+            if str(col1).startswith("Unnamed"):
+                colName = str(col2)
+            else:
+                colName = str(col1) + "_" + str(col2)
+            columnas.append(colName)
+
+        # cambiamos las columnas multindex por estas ya combinadas
+        globals()[nombre_df].columns = columnas
+
+        # eliminamos las columnas RL y Partidos
+        globals()[nombre_df].drop(columns=["Rk", "Matches"], inplace=True)
+
+        # limpiamos las filas que eran cabeceras inicialmente (Incluyen 'Jugador' en la columna Jugador)
+        globals()[nombre_df].drop(
+            globals()[nombre_df][globals()[nombre_df]["Player"] == "Player"].index,
+            inplace=True,
+        )
+
+        # Añadimos los ids de FBRef de cada jugador (solo lo haremos en el primero)
+        if url.split("#")[1] == "stats_standard":
+            list_ids_fb_players = []
+            for p in soup.find_all("td", {"data-stat": "player"}):
+                list_ids_fb_players.append(p.attrs["data-append-csv"])
+
+            globals()[nombre_df]["fb_id_player"] = list_ids_fb_players
+
+        # Limpiamos las columnas Nation, Comp y Pos
+        globals()[nombre_df]["Nation"] = globals()[nombre_df]["Nation"].apply(
+            lambda x: x.split(" ")[1] if x is not np.nan else "-"
+        )
+        globals()[nombre_df]["Comp"] = globals()[nombre_df]["Comp"].apply(
+            lambda x: x.split(" ", 1)[1]
+        )
+        globals()[nombre_df]["Pos"] = globals()[nombre_df]["Pos"].apply(
+            lambda x: x.split(",")[0] if x is not np.nan else "-"
+        )
+
+        # Limpiamos los nombres de los jugadores (para luego poder cruzarlos mejor)
+        globals()[nombre_df]["Player"] = globals()[nombre_df]["Player"].apply(
+            lambda x: clean(x, lower=False)
+        )
+
+        # añadimos la temporada al df
+        globals()[nombre_df]["Season"] = season
+        # añadimos el df a nuestra lista de tablas
+        list_df.append(globals()[nombre_df])
+
+        # Definimos unas columnas sobre las que uniremos los dfs
+        columns_to_merge = [
+            "Season",
+            "Player",
+            "Nation",
+            "Pos",
+            "Squad",
+            "Comp",
+            "Age",
+            "Born",
+        ]
+
+        # Definimos el df sobre el que iteraremos
+        df_base = list_df[0].loc[:, columns_to_merge]
+
+        # Comprobamos que no hay jugadores duplicados
+        if len(df_base[df_base.duplicated()]) > 0:
+            df_base.drop_duplicates()  # eliminamos duplicados por todas las columnas
+
+        # Recorremos la lista de dfs para unirla con los demas
+        for i, df in enumerate(list_df):
+            df_base = df_base.merge(
+                list_df[i], how="left", on=columns_to_merge, suffixes=("", "_y")
+            )
+
+        # eliminamos cualquier columna duplicada
+        df_base.drop(df_base.filter(regex="_y$").columns, axis=1, inplace=True)
+
+        # Si estamos scrapeando solo jugadores, eliminamos los porteros (GK) y viceversa
+        if only_gk == True:
+            df_base = df_base.loc[df_base["Pos"] == "GK"]
+        else:
+            df_base = df_base.loc[df_base["Pos"] != "GK"]
+
+        df_base = df_base.fillna(0).reset_index(drop=True)
+
+    return df_base
 
 
 class Command(BaseCommand):
-    help = "collect players data from Understat.com"
+    help = "collect players data from Fbref.com"
     # define logic of command
 
     def add_arguments(self, parser):
@@ -192,12 +180,12 @@ class Command(BaseCommand):
         else:
             mode_x = "Automático"
         scrape_init = timezone.now()
-        scraped_from_x = "Understat - From Teams"
+        scraped_from_x = "FBRef - Jugadores"
 
         # Creamos un archivo csv con el resultado del scrape
 
         # Borramos los datos que pueda haber sobre esa temporada previos
-        ScrapeJob.objects.filter(origin="US", season_from=season_x).delete()
+        ScrapeJob.objects.filter(origin="FG", season_from=season_x).delete()
 
         # Creamos una linea en el trabajo de scraping
         try:
@@ -205,7 +193,7 @@ class Command(BaseCommand):
                 scrape_job_id=scrape_job_uuid,
                 created_date=scrape_init,
                 mode=mode_x,
-                origin="US",
+                origin="FG",
                 scraped_from=scraped_from_x,
                 season_from=season_x,
             )
@@ -214,7 +202,7 @@ class Command(BaseCommand):
             print("Error al crear linea de scrape_job")
 
         try:
-            df_temp = get_understat_player_data_by_teams(season_x)
+            df_temp = get_fbref_player_data(season_x, only_gk=True)
         except:
             print("Error del código de web scraping")
 
@@ -223,19 +211,71 @@ class Command(BaseCommand):
         print("Guardando información de los jugadores en la base de datos")
         for i in tqdm(range(len(df_temp))):
             try:
-                PlayerUnderstat.objects.get_or_create(
-                    us_player_id=df_temp.iloc[i, 0],
-                    us_player_name=df_temp.iloc[i, 1],
-                    us_position=df_temp.iloc[i, 2],
-                    us_team=df_temp.iloc[i, 3],
-                    us_season=df_temp.iloc[i, 4],
-                    us_comp=df_temp.iloc[i, 5],
-                    us_key_passes=df_temp.iloc[i, 6],
-                    us_xGChain=df_temp.iloc[i, 7],
-                    us_xGBuildup=df_temp.iloc[i, 8],
-                    us_key_passes_90=df_temp.iloc[i, 9],
-                    us_xGChain_90=df_temp.iloc[i, 10],
-                    us_xGBuildup_90=df_temp.iloc[i, 11],
+                PlayerFbrefGK.objects.get_or_create(
+                    fb_player_id=df_temp["fb_id_player"][i],
+                    fb_player_name=df_temp["Player"][i],
+                    fb_season=df_temp["Season"][i],
+                    fb_nation=df_temp["Nation"][i],
+                    fb_pos=df_temp["Pos"][i],
+                    fb_team=df_temp["Squad"][i],
+                    fb_comp=df_temp["Comp"][i],
+                    fb_born=df_temp["Born"][i],
+                    fb_playing_time_MP=df_temp["Playing Time_MP"][i],
+                    fb_playing_time_starts=df_temp["Playing Time_Starts"][i],
+                    fb_playing_time_min=df_temp["Playing Time_Min"][i],
+                    fb_playing_time_90s=df_temp["Playing Time_90s"][i],
+                    fb_Gls=df_temp["Performance_Gls"][i],
+                    fb_Ast=df_temp["Performance_Ast"][i],
+                    fb_G_minus_PK=df_temp["Performance_G-PK"][i],
+                    fb_PK=df_temp["Performance_PK"][i],
+                    fb_PKatt=df_temp["Performance_PKatt"][i],
+                    fb_CrdY=df_temp["Performance_CrdY"][i],
+                    fb_CrdR=df_temp["Performance_CrdR"][i],
+                    fb_Gls_90=df_temp["Per 90 Minutes_Gls"][i],
+                    fb_Ast_90=df_temp["Per 90 Minutes_Ast"][i],
+                    fb_G_plus_A_90=df_temp["Per 90 Minutes_G+A"][i],
+                    fb_G_plus_A_minus_PK=df_temp["Per 90 Minutes_G+A-PK"][i],
+                    fb_xG=df_temp["Expected_xG"][i],
+                    fb_npxG=df_temp["Expected_npxG"][i],
+                    fb_xA=df_temp["Expected_xA"][i],
+                    fb_npxG_plus_xA=df_temp["Expected_npxG+xA"][i],
+                    fb_xG_90=df_temp["Per 90 Minutes_xG"][i],
+                    fb_xA_90=df_temp["Per 90 Minutes_xA"][i],
+                    fb_xG_plus_xA_90=df_temp["Per 90 Minutes_xG+xA"][i],
+                    fb_npxG_90=df_temp["Per 90 Minutes_npxG"][i],
+                    fb_npxG_plus_xA_90=df_temp["Per 90 Minutes_npxG+xA"][i],
+                    fb_GA=df_temp["Performance_GA"][i],
+                    fb_GA_90=df_temp["Performance_GA90"][i],
+                    fb_SoTA=df_temp["Performance_SoTA"][i],
+                    fb_saves=df_temp["Performance_Saves"][i],
+                    fb_save_perc=df_temp["Performance_Save%"][i],
+                    fb_W=df_temp["Performance_W"][i],
+                    fb_D=df_temp["Performance_D"][i],
+                    fb_L=df_temp["Performance_L"][i],
+                    fb_CS=df_temp["Performance_CS"][i],
+                    fb_CS_perc=df_temp["Performance_CS%"][i],
+                    fb_PK_against=df_temp["Penalty Kicks_PKA"][i],
+                    fb_PK_saves=df_temp["Penalty Kicks_PKsv"][i],
+                    fb_PK_saves_perc=df_temp["Penalty Kicks_Save%"][i],
+                    fb_PSxG=df_temp["Expected_PSxG"][i],
+                    fb_PSxG_vs_SoT=df_temp["Expected_PSxG/SoT"][i],
+                    fb_PSxG_dif=df_temp["Expected_PSxG+/-"][i],
+                    fb_Launched_Cmp=df_temp["Launched_Cmp"][i],
+                    fb_Launched_Att=df_temp["Launched_Att"][i],
+                    fb_Launched_Cmp_perc=df_temp["Launched_Cmp%"][i],
+                    fb_Passes_Att=df_temp["Passes_Att"][i],
+                    fb_Passes_Thr=df_temp["Passes_Thr"][i],
+                    fb_Passes_Launch_perc=df_temp["Passes_Launch%"][i],
+                    fb_Passes_AvgLen=df_temp["Passes_AvgLen"][i],
+                    fb_Goal_Kicks_Att=df_temp["Goal Kicks_Att"][i],
+                    fb_Goal_Kicks_Launch_perc=df_temp["Goal Kicks_Launch%"][i],
+                    fb_Goal_Kicks_AvgLen=df_temp["Goal Kicks_AvgLen"][i],
+                    fb_Crosses_Opp=df_temp["Crosses_Opp"][i],
+                    fb_Crosses_Stp=df_temp["Crosses_Stp"][i],
+                    fb_Crosses_Stp_perc=df_temp["Crosses_Stp%"][i],
+                    fb_Sweeper_OPA=df_temp["Sweeper_#OPA"][i],
+                    fb_Sweeper_OPA_90=df_temp["Sweeper_#OPA/90"][i],
+                    fb_Sweeper_AvgDist=df_temp["Sweeper_AvgDist"][i],
                     scrape_job=new_job,
                     created_data=timezone.now(),
                 )
@@ -246,7 +286,10 @@ class Command(BaseCommand):
                 n_errores += 1
 
         # Preparamos los datos apra actualizar el estado del Job de Scraping
-        state_x = "Completado" if n_errores == 0 else "Con errores"
+        if n_errores == 0:
+            state_x = "OK"
+        else:
+            state_x = "KO"
         scrape_data = {
             "number_errors": n_errores,
             "completed_date": timezone.now(),

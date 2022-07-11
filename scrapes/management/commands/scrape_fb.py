@@ -164,7 +164,7 @@ def get_fbref_player_data(season, only_gk=False):
 
 
 class Command(BaseCommand):
-    help = "collect players data from Understat.com"
+    help = "collect players data from fbref.com"
     # define logic of command
 
     def add_arguments(self, parser):
@@ -212,7 +212,7 @@ class Command(BaseCommand):
         for i in tqdm(range(len(df_temp))):
             try:
                 PlayerFbref.objects.get_or_create(
-                    fb_player_id=df_temp["fb_id_player"].iloc[i],
+                    fb_player_id=df_temp["fb_id_player"][i],
                     fb_player_name=df_temp["Player"][i],
                     fb_season=df_temp["Season"][i],
                     fb_nation=df_temp["Nation"][i],
