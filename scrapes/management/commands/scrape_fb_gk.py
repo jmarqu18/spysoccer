@@ -180,7 +180,7 @@ class Command(BaseCommand):
         else:
             mode_x = "Automático"
         scrape_init = timezone.now()
-        scraped_from_x = "FBRef - Jugadores"
+        scraped_from_x = "FBRef - Porteros"
 
         # Creamos un archivo csv con el resultado del scrape
 

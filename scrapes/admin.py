@@ -10,11 +10,26 @@ from .models import (
 
 
 class ScrapeJobAdmin(admin.ModelAdmin):
-    list_display = ("scraped_from", "completed_date", "state", "number_errors")
+    list_display = (
+        "scraped_from",
+        "season_from",
+        "mode",
+        "created_date",
+        "completed_date",
+        "state",
+        "number_errors",
+    )
 
 
 class PlayerUnderstatAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        "us_player_name",
+        "us_team",
+        "us_season",
+        "created_data",
+        "scrape_job",
+    )
+    list_filter = ("us_comp", "us_position")
 
 
 class PlayerFbrefGKAdmin(admin.ModelAdmin):

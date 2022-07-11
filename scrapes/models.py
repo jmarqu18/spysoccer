@@ -32,14 +32,22 @@ class ScrapeJob(models.Model):
     scrape_job_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False
     )
-    created_date = models.DateTimeField(default=timezone.now)
-    mode = models.CharField(max_length=20)
-    origin = models.CharField(max_length=2, choices=ORIGIN_CHOICES, default=FBREF)
-    scraped_from = models.CharField(max_length=50)
-    season_from = models.CharField(max_length=30)
-    state = models.CharField(max_length=20, choices=STATE_CHOICES, default=EN_PROCESO)
-    number_errors = models.IntegerField(default=0, blank=True)
-    completed_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(
+        default=timezone.now, verbose_name="Fecha de creación"
+    )
+    mode = models.CharField(max_length=20, verbose_name="Modo")
+    origin = models.CharField(
+        max_length=2, choices=ORIGIN_CHOICES, default=FBREF, verbose_name="Origen"
+    )
+    scraped_from = models.CharField(max_length=50, verbose_name="Extraido de")
+    season_from = models.CharField(max_length=30, verbose_name="Temporada")
+    state = models.CharField(
+        max_length=20, choices=STATE_CHOICES, default=EN_PROCESO, verbose_name="Estado"
+    )
+    number_errors = models.IntegerField(default=0, blank=True, verbose_name="Errores")
+    completed_date = models.DateTimeField(
+        default=timezone.now, verbose_name="Fecha de finalización"
+    )
 
     class Meta:
         verbose_name = "Web Scraping Job"
@@ -50,8 +58,6 @@ class ScrapeJob(models.Model):
 
 
 class PlayerUnderstat(models.Model):
-    """Model definition for PlayerUnderstat."""
-
     us_player_id = models.IntegerField(default=0, blank=True)
     us_player_name = models.CharField(max_length=250)
     us_position = models.CharField(max_length=10)
@@ -68,8 +74,8 @@ class PlayerUnderstat(models.Model):
     created_data = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        verbose_name = "Player data from Understat"
-        verbose_name_plural = "Players data from Understat"
+        verbose_name = "Datos de jugador de Understat"
+        verbose_name_plural = "Datos de jugadores de Understat"
 
         constraints = [
             models.UniqueConstraint(
