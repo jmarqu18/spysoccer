@@ -1,0 +1,69 @@
+{% load static %}
+{% load menu %}
+<div id="sidebar" class="active">
+    <div class="sidebar-wrapper active">
+        <div class="sidebar-header position-relative">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="logo">
+                    <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/logo.svg' %}" alt="Logo"
+                            srcset=""></a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+
+
+                <li class="{% active 'home' %} sidebar-item">
+                    <a href="{% url 'home' %}" class='sidebar-link'>
+                        <i class="bi bi-bookmark-star"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li class="{% active 'about' %} sidebar-item">
+                    <a href="{% url 'about' %}" class='sidebar-link'>
+                        <i class="bi bi-info-square-fill"></i>
+                        <span>Información</span>
+                    </a>
+
+                </li>
+
+                <li class="{% active 'scrapes_list' %} sidebar-item">
+                    <a href="{% url 'scrapes_list' %}" class='sidebar-link'>
+                        <i class="bi bi-cloud-arrow-down-fill"></i>
+                        <span>Scraping Jobs</span>
+                    </a>
+                </li>
+                {% block content %}
+
+
+                {% endblock content %}
+                <li class="sidebar-title">Gestión Usuarios</li>
+
+                {% if user.is_authenticated %}
+                <li class="{% active 'account_logout' %} sidebar-item">
+                    <a href="{% url 'account_logout' %}" class='sidebar-link'>
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>Salir</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="{% active 'account_login' %} sidebar-item">
+                    <a href="{% url 'account_login' %}" class='sidebar-link'>
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </a>
+                </li>
+                <li class="{% active 'account_signup' %} sidebar-item">
+                    <a href="{% url 'account_signup' %}" class='sidebar-link'>
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Registrarse</span>
+                    </a>
+                </li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</div>

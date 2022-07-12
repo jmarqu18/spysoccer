@@ -1,0 +1,35 @@
+/* h1 {
+    color: crimson;
+}
+
+img.logo {
+    height: 45px;
+    width: auto;
+}
+
+*/
+/* Tamaño del logo */
+.sidebar-wrapper .sidebar-header img {
+    height: 2.9rem;
+}
+
+
+.sidebar-wrapper .menu .sidebar-item.active>.sidebar-link {
+    background-color: #00d37f;
+}
+
+
+.sidebar-wrapper .menu .sidebar-link i,
+.sidebar-wrapper .menu .sidebar-link svg {
+    color: #014751;
+}
+
+.sidebar-wrapper .menu .sidebar-link i.bi {
+    height: 1.5rem;
+    font-size: 1.5rem;
+}
+
+
+.colors {
+    color: #00d37f #014751 #0f2830 #f8fbff #aff8c8 #ffeeb4 #d2c4fb;
+}
