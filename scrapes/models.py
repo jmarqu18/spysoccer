@@ -78,7 +78,7 @@ class PlayerUnderstat(models.Model):
     us_key_passes_90 = models.FloatField(default=0, blank=True)
     us_xGChain_90 = models.FloatField(default=0, blank=True)
     us_xGBuildup_90 = models.FloatField(default=0, blank=True)
-    scrape_job = models.ForeignKey("ScrapeJob", on_delete=models.CASCADE)
+    scrape_job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE)
     created_data = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -162,7 +162,7 @@ class PlayerFbrefGK(models.Model):
     fb_Sweeper_OPA = models.FloatField(default=0, blank=True)
     fb_Sweeper_OPA_90 = models.FloatField(default=0, blank=True)
     fb_Sweeper_AvgDist = models.FloatField(default=0, blank=True)
-    scrape_job = models.ForeignKey("ScrapeJob", on_delete=models.CASCADE)
+    scrape_job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE)
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -366,7 +366,7 @@ class PlayerFbref(models.Model):
     fb_Aerial_Duels_Won = models.IntegerField(default=0, blank=True)
     fb_Aerial_Duels_Lost = models.IntegerField(default=0, blank=True)
     fb_Aerial_Duels_Won_perc = models.FloatField(default=0, blank=True)
-    scrape_job = models.ForeignKey("ScrapeJob", on_delete=models.CASCADE)
+    scrape_job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE)
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -394,7 +394,7 @@ class PlayerCapology(models.Model):
     ca_team = models.CharField(max_length=100)
     ca_season = models.CharField(max_length=30, blank=False)
     ca_comp = models.CharField(max_length=50, blank=False)
-    scrape_job = models.ForeignKey("ScrapeJob", on_delete=models.CASCADE)
+    scrape_job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE)
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -421,7 +421,7 @@ class PlayerTransfermarkt(models.Model):
     tm_current_club = models.CharField(max_length=100)
     tm_date_joined = models.DateField(blank=True, null=True)
     tm_contract_expires = models.DateField(blank=True, null=True)
-    scrape_job = models.ForeignKey("ScrapeJob", on_delete=models.CASCADE)
+    scrape_job = models.ForeignKey(ScrapeJob, on_delete=models.CASCADE)
     created_data = models.DateTimeField(auto_now=True)
 
     class Meta:

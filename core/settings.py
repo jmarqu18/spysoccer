@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "pages.apps.PagesConfig",
     "accounts.apps.AccountsConfig",
     "scrapes.apps.ScrapesConfig",
+    "players.apps.PlayersConfig",
+    "scouting.apps.ScoutingConfig",
 ]
 
 MIDDLEWARE = [
