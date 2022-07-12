@@ -29,6 +29,31 @@ img.logo {
     font-size: 1.5rem;
 }
 
+#auth {
+    overflow: hidden;
+    height: 100%;
+    max-width: 100%;
+}
+
+
+#auth #auth-left {
+    padding: 7.5rem;
+}
+
+
+#auth #auth-right {
+    background: radial-gradient(#014751, #0f2830);
+    display: flex;
+    height: 100%;
+}
+
+#auth-right img {
+    opacity: 0.5;
+    width: 70%;
+    margin: auto;
+}
+
+
 
 .colors {
     color: #00d37f #014751 #0f2830 #f8fbff #aff8c8 #ffeeb4 #d2c4fb;

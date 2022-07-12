@@ -1,16 +1,40 @@
-{% extends '_base.html' %}
+{% extends '_base_auth.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Log In{% endblock title %}
+{% block title %}Entra en SpySoccer{% endblock title %}
 
 
 {% block content %}
-<h2>Log In</h2>
+<div class="row h-100">
+    <div class="col-lg-5 col-12">
+        <div id="auth-left">
+            <div class="auth-logo">
+                <a href="{% url 'home' %}"><img src="{% static 'assets/images/logo/logo.svg' %}" alt="Logo"></a>
+            </div>
+            <p class="auth-subtitle mb-5">Entra ahora a tu aplicación de scouting en fútbol</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5" type="submit">Entrar</button>
+            </form>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button class="btn btn-success" type="submit">Log In</button>
-</form>
+            <div class="text-center mt-5 text-lg fs-4">
+                <p class="text-gray-600">¿No tienes cuenta? <a href="{% url 'account_signup' %}"
+                        class="font-bold">Regístrate</a>.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 d-none d-lg-block">
+        <div id="auth-right">
+            <img src="{% static 'assets/images/bg/fd_futbol1.svg' %}" alt="Futbolista">
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 {% endblock content %}
