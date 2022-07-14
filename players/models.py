@@ -109,7 +109,9 @@ class PlayerStats(models.Model):
 
     id = models.UUIDField(editable=False, default=uuid.uuid4, primary_key=True)
     player = models.ForeignKey(Player, on_delete=models.CASCADE, verbose_name="Jugador")
-    extraction_date = models.DateField(verbose_name="Fecha de extracción")
+    extraction_date = models.DateTimeField(
+        verbose_name="Fecha de extracción"
+    )  # Sale del Scrape job para comparar
     season = models.CharField(max_length=30, verbose_name="Temporada")  # fb_season
     team = models.CharField(max_length=50, blank=True, verbose_name="Equipo")  # fb_team
     team_date_joined = models.DateField(

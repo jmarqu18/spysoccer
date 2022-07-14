@@ -19,6 +19,11 @@
     <link rel="shortcut icon" href="{% static 'assets/images/logo/favicon.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'assets/css/shared/iconly.css' %}">
 
+    {% block styles %}
+
+    {% endblock %}
+
+
     <!-- CSS propio SpySoccer-->
     <link rel="stylesheet" href="{% static 'assets/css/spysoccer_base.css' %}">
 </head>
@@ -58,7 +63,9 @@
     </div>
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/pages/dashboard.js' %}"></script>
+    {% block scripts %}
 
+    {% endblock scripts %}
     <!-- JavaScript propio de SpySoccer -->
     <script src="{% static 'assets/js/base.js' %}"></script>
 

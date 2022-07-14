@@ -1,10 +1,53 @@
 <!-- templates/books/book_list.html -->
 {% extends "_base.html" %}
-{% block title %}Scrapes realizados{% endblock title %}
+{% load static %}
+{% block title %}Fuentes de datos - SpySoccer{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'assets/css/pages/simple-datatables.css' %}">
+{% endblock %}
+
+
 {% block content %}
-{% for scrapes in scrapejobs_list %}
-<div>
-    <h2><a href="{{ scrapes.get_absolute_url }}">{{ scrapes }}</a></h2>
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <h3>Datatable test</h3>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+
+
+                    <thead>
+                        <tr>
+                            <th data-sortable><a href="#" class="dataTable-sorter">Srapes Job</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scrapes in scrapejobs_list %}
+                        <tr>
+                            <td><a href="{{ scrapes.get_absolute_url }}">{{ scrapes }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+
+            </div>
+        </div>
+    </section>
 </div>
-{% endfor %}
+
+
+{% block scripts %}
+<script src="{% static 'assets/js/extensions/simple-datatables.js' %}"></script>
+
+
+{% endblock scripts %}
+
+
 {% endblock content %}
