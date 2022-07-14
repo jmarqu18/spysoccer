@@ -11,6 +11,9 @@ class Player(models.Model):
     name = models.CharField(
         max_length=120, blank=False, verbose_name="Nombre del jugador"
     )
+    also_named = models.CharField(
+        max_length=255, blank=True, default="", verbose_name="También llamado"
+    )
     dob = models.DateField(blank=True, null=True, verbose_name="Fecha de nacimiento")
     citizenship = models.CharField(
         max_length=80, blank=True, verbose_name="País de origen"
@@ -21,9 +24,14 @@ class Player(models.Model):
     position_norm = models.CharField(
         max_length=30, verbose_name="Posición normalizada"
     )  # TODO Sacar a una tabla de posiciones normalizadas?
+    image = models.URLField(
+        max_length=255,
+        verbose_name="Foto del jugador",
+        default="https://img.a.transfermarkt.technology/portrait/header/default.jpg",
+    )
     id_fbref = models.CharField(max_length=30, blank=True)
-    id_understat = models.IntegerField(blank=True)
-    id_transfermarkt = models.IntegerField(blank=True)
+    id_understat = models.CharField(max_length=30, blank=True)
+    id_transfermarkt = models.CharField(max_length=30, blank=True)
     id_capology = models.CharField(max_length=150, blank=True)
 
     class Meta:
@@ -36,13 +44,14 @@ class Player(models.Model):
         """Unicode representation of Player."""
         return self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Save method for Player."""
         pass
 
     def get_absolute_url(self):
         """Return absolute url for Player."""
         # return reverse("scrapes_detail", args=[str(self.pk)])
+        pass
 
     @property
     def age(self):

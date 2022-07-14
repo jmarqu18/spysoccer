@@ -31,9 +31,6 @@ def get_understat_player_data_by_teams(season):
 
     season_x = season.split("-")[0]
 
-    # Generamos una lista vacía para albergar las url de cada competicion
-    list_urls_leagues = []
-
     # Generamos una lista vacía para albergar los df de cada competicion
     list_dfs = []
     for i, comp in enumerate(comps):
