@@ -2,9 +2,6 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pandas as pd
-from itertools import islice
-import traceback
-import uuid
 
 from players.models import Player
 
@@ -17,15 +14,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         start_time = timezone.now()
-        player_uuid = uuid.uuid4()
         file_path = options["file_path"]
         data = pd.read_csv(file_path)
         data.info()
-        # Lista para albergar todos los player objects
+
+        # Limpiamos el dato de understat que se guarda erroneamente
+        data["us_id_player"].loc[data["us_id_player"].isna()] = ""
+        data["us_id_player"] = (
+            data["us_id_player"].astype(str).apply(lambda x: x.split(".")[0])
+        )
+        data["tm_player_id"] = data["tm_player_id"].astype(str)
 
         # Borramos los datos que pueda haber sobre esa temporada previos
         Player.objects.all().delete()
-
+        #   Lista para albergar todos los player objects
         players = [
             Player(
                 name=row["name"],

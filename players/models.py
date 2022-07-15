@@ -121,9 +121,11 @@ class PlayerStats(models.Model):
         blank=True, null=True, verbose_name="Fecha de fin de contrato"
     )  # tm_contract_expires
     competition = models.CharField(max_length=50, verbose_name="Competición")  # fb_comp
-    ca_salary = models.DecimalField(max_digits=12, decimal_places=2)  # ca_salary
-    tm_current_value = models.DecimalField(
-        max_digits=12, decimal_places=2
+    salary = models.IntegerField(
+        blank=True, default=0, verbose_name="Salario anual (€)"
+    )  # ca_salary
+    current_value = models.IntegerField(
+        blank=True, default=0, verbose_name="Valor de mercado"
     )  # tm_current_value
     matches_played = models.IntegerField(
         default=0, blank=True, verbose_name="Partidos jugados"
@@ -287,6 +289,14 @@ class PlayerStats(models.Model):
     key_passes = models.IntegerField(
         default=0, blank=True, verbose_name="Pases clave"
     )  # fb_key_passes
+    xGChain = models.FloatField(default=0, blank=True)  # us_xGChain
+    xGBuildup = models.FloatField(default=0, blank=True)  # us_xGBuildup
+    xGChain_90 = models.FloatField(
+        default=0, blank=True, verbose_name="xGChain por 90 minutos"
+    )  # us_xGChain_90
+    xGBuildup_90 = models.FloatField(
+        default=0, blank=True, verbose_name="xBuildup por 90 minutos"
+    )  # us_xGBuildup_90
     last_third_passes = models.IntegerField(
         default=0, blank=True, verbose_name="Pases al último tercio"
     )  # fb_last_third_passes
@@ -677,9 +687,11 @@ class GoalkeeperStats(models.Model):
         blank=True, null=True, verbose_name="Fecha de fin de contrato"
     )  # tm_contract_expires
     competition = models.CharField(max_length=50, verbose_name="Competición")  # fb_comp
-    ca_salary = models.DecimalField(max_digits=12, decimal_places=2)  # ca_salary
-    tm_current_value = models.DecimalField(
-        max_digits=12, decimal_places=2
+    salary = models.IntegerField(
+        blank=True, default=0, verbose_name="Salario anual (€)"
+    )  # ca_salary
+    current_value = models.IntegerField(
+        blank=True, default=0, verbose_name="Valor de mercado"
     )  # tm_current_value
     matches_played = models.IntegerField(
         default=0, blank=True, verbose_name="Partidos jugados"
@@ -690,24 +702,6 @@ class GoalkeeperStats(models.Model):
     minutes_played = models.IntegerField(
         default=0, blank=True, verbose_name="Minutos jugados"
     )  # fb_playing_time_min
-    minutes_per_match = models.IntegerField(
-        default=0, blank=True, verbose_name="Minutos por partido"
-    )  # fb_Playing_Time_Mn_vs_MP
-    perc_minutes_played = models.FloatField(
-        default=0, blank=True, verbose_name="Porcentaje de minutos jugados"
-    )  # fb_Playing_Time_Min_perc
-    complete_matches_played = models.IntegerField(
-        default=0, blank=True, verbose_name="Partidos completos"
-    )  # fb_Starts_Compl
-    matches_as_substitute = models.IntegerField(
-        default=0, blank=True, verbose_name="Partidos jugados como suplente"
-    )  # fb_Subs_Subs
-    mean_minutes_starts = models.IntegerField(
-        default=0, blank=True, verbose_name="Media de minutos cuando es titular"
-    )  # fb_Starts_Min_vs_Start
-    mean_minutes_substitute = models.IntegerField(
-        default=0, blank=True, verbose_name="Media de minutos cuando es suplente"
-    )  # fb_Subs_Mn_vs_Sub
     playing_time_90s = models.FloatField(
         default=0, blank=True, verbose_name="Minutos entre 90"
     )  # fb_playing_time_90s
