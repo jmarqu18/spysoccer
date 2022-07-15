@@ -2,16 +2,12 @@ from datetime import datetime
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.db.models import Count, Max
 
 # Base
 import pandas as pd
 import numpy as np
-import uuid
-import lxml
-from tqdm import tqdm
-from cleantext import clean
 
-import traceback
 
 from scrapes.models import (
     PlayerFbref,
@@ -338,31 +334,23 @@ class Command(BaseCommand):
             how="left",
         ).drop(columns="ca_player_id")
 
-        df_base = (
-            df_base.merge(
-                data_tm[cols_tm],
-                left_on="id_transfermarkt",
-                right_on="tm_player_id",
-                how="left",
-            )
-            .drop(columns="tm_player_id")
-            .drop_duplicates("id")
-        )
+        df_base = df_base.merge(
+            data_tm[cols_tm],
+            left_on="id_transfermarkt",
+            right_on="tm_player_id",
+            how="left",
+        ).drop(columns="tm_player_id")
 
         df_base.reset_index(drop=True, inplace=True)
 
         # Con esta base ahora separamos porteros y jugadores
         # Jugadores
-        df_playerstats = (
-            df_base.merge(
-                data_understat[cols_us],
-                how="left",
-                left_on="id_understat",
-                right_on="us_player_id",
-            )
-            .drop(columns="us_player_id")
-            .drop_duplicates("id")
-        )
+        df_playerstats = df_base.merge(
+            data_understat[cols_us],
+            how="left",
+            left_on="id_understat",
+            right_on="us_player_id",
+        ).drop(columns="us_player_id")
 
         df_playerstats = (
             df_playerstats.merge(
@@ -372,7 +360,7 @@ class Command(BaseCommand):
                 right_on="fb_player_id",
             )
             .drop(columns="fb_player_id")
-            .drop_duplicates("id")
+            .drop_duplicates(["id", "fb_season", "fb_team"])
         )
 
         # Quitamos a los porteros
@@ -387,7 +375,7 @@ class Command(BaseCommand):
                 right_on="fb_player_id",
             )
             .drop(columns="fb_player_id")
-            .drop_duplicates("id")
+            .drop_duplicates(["id", "fb_season", "fb_team"])
         )
 
         # Quitamos a los jugadores
@@ -440,8 +428,8 @@ class Command(BaseCommand):
             else datetime.strptime("1900-01-01", "%Y-%m-%d")
         )
 
-        df_goalkeeperstats.to_csv("test_porteros.csv", index=False)
-        df_playerstats.to_csv("test_jugadores.csv", index=False)
+        # TODO: Evitar que se suban registros duplicados comparando lo que ya tenemos
+        # con lo nuevo
 
         # Vamos a Insertar los datos en la BBDD
         scrape_job = ScrapeJob.objects.latest("completed_date")
