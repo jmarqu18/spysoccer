@@ -43,7 +43,18 @@
     margin: auto;
 }
 
+.dataTable-table>tbody>tr>td,
+.dataTable-table>tbody>tr>th,
+.dataTable-table>tfoot>tr>td,
+.dataTable-table>tfoot>tr>th,
+.dataTable-table>thead>tr>td,
+.dataTable-table>thead>tr>th {
+    vertical-align: middle;
+}
 
+.dataTable-table>tbody>tr>td>img {
+    border-radius: 50%;
+}
 
 .colors {
     color: #00d37f #014751 #0f2830 #f8fbff #aff8c8 #ffeeb4 #d2c4fb;

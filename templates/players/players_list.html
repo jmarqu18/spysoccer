@@ -1,0 +1,66 @@
+<!-- templates/books/book_list.html -->
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Jugadores - SpySoccer{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'assets/css/pages/simple-datatables.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            {% block titular %}{% endblock titular %}
+            <h2>Jugadores registrados en SpySoccer</h2>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Posición</th>
+                            <th>Nacionalidad</th>
+                            <th>Edad</th>
+                            <th>Altura</th>
+                            <th>Pie</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in players_list %}
+                        <tr>
+                            <td><img src="{{ player.image }}" alt="{{ player.name }}" width="35" height="40"></td>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.position }}</td>
+                            <td>{{ player.citizenship }}</td>
+                            <td>{{ player.age }}</td>
+                            <td>{{ player.height }}</td>
+                            <td>{{ player.foot }}</td>
+                            <td><a href="#"><i class="bi bi-file-earmark-arrow-down-fill"></i> test</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% block scripts %}
+<script src="{% static 'assets/js/extensions/simple-datatables.js' %}"></script>
+
+{% endblock scripts %}
+
+
+{% endblock content %}

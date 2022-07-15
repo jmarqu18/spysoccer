@@ -51,7 +51,7 @@ class Player(models.Model):
 
     def get_absolute_url(self):
         """Return absolute url for Player."""
-        # return reverse("scrapes_detail", args=[str(self.pk)])
+        # return reverse("player_detail", args=[str(self.pk)])
         pass
 
     @property

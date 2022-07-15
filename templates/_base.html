@@ -37,17 +37,18 @@
                 </a>
             </header>
             {% include '_sidebar.html' %}
-
+            {% block content %}
             <div class="page-heading">
                 <h3>{% block titular %}Página de inicio - Dashboard inicial{% endblock titular %}</h3>
             </div>
             <div class="page-content">
 
-                {% block content %}
 
-                {% endblock content %}
+
+
 
             </div>
+            {% endblock content %}
             <footer class="mt-auto">
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
