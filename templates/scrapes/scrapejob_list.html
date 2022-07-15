@@ -23,13 +23,23 @@
 
                     <thead>
                         <tr>
-                            <th data-sortable><a href="#" class="dataTable-sorter">Srapes Job</a></th>
+                            <th>Temporada</th>
+                            <th>Origen de datos</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Número de registros</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for scrapes in scrapejobs_list %}
                         <tr>
-                            <td><a href="{{ scrapes.get_absolute_url }}">{{ scrapes }}</a></td>
+                            <td>{{ scrapes.season_from }}</td>
+                            <td>{{ scrapes.scraped_from }}</td>
+                            <td>{{ scrapes.state }}</td>
+                            <td>{{ scrapes.completed_date }}</td>
+                            <td>{{ scrapes.number_players }}</td>
+                            <td><i class="bi bi-file-earmark-arrow-down-fill"></i></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -45,7 +55,6 @@
 
 {% block scripts %}
 <script src="{% static 'assets/js/extensions/simple-datatables.js' %}"></script>
-
 
 {% endblock scripts %}
 
