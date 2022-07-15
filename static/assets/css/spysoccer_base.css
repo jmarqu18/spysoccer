@@ -56,6 +56,20 @@
     border-radius: 50%;
 }
 
+.pagination.pagination-primary .page-item.active .page-link {
+    background-color: #014751;
+    border-color: #014751;
+    box-shadow: 0 2px 5px rgba(0, 135, 81, 0.5);
+}
+
+a {
+    color: #108AA1;
+}
+
+a:hover {
+    color: #014751;
+}
+
 .colors {
     color: #00d37f #014751 #0f2830 #f8fbff #aff8c8 #ffeeb4 #d2c4fb;
 }

@@ -95,7 +95,7 @@ class Index(models.Model):
         """Unicode representation of Index."""
         return "{} - ({})".format(self.index_name, self.position_norm)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Save method for Index."""
         pass
 
@@ -623,11 +623,18 @@ class PlayerStats(models.Model):
         verbose_name = "Estadísticas del jugador"
         verbose_name_plural = "Estadísticas de los jugadores"
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["player", "season", "team", "matches_played"],
+                name="unique_player_id_season_team_combination_players_cleaned",
+            )
+        ]
+
     def __str__(self):
         """Unicode representation of PlayerStats."""
         return "Estadísticas de {} (Temp. {})".format(self.player, self.season)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Save method for PlayerStats."""
         pass
 
@@ -810,11 +817,18 @@ class GoalkeeperStats(models.Model):
         verbose_name = "Estadísticas del portero"
         verbose_name_plural = "Estadísticas de los porteros"
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["player", "season", "team", "matches_played"],
+                name="unique_player_id_season_team_combination_goalkeepers_cleaned",
+            )
+        ]
+
     def __str__(self):
         """Unicode representation of GoalkeeperStats."""
         return "Estadísticas de {} - (Temp. {})".format(self.player, self.season)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Save method for GoalkeeperStats."""
         pass
 
@@ -849,7 +863,7 @@ class Scoring(models.Model):
         """Unicode representation of Scoring."""
         return "{} - ({})".format(self.player, self.scoring)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """Save method for Scoring."""
         pass
 

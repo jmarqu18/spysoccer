@@ -12,8 +12,15 @@
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
-            {% block titular %}{% endblock titular %}
-            <h2>Jugadores registrados en SpySoccer</h2>
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                {% block titular %}{% endblock titular %}
+                <h2>Jugadores registrados en SpySoccer</h2>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav class="breadcrumb-header float-start float-lg-end">
+                    <a href="{% url 'players_csv' %}">Descargar CSV</a>
+                </nav>
+            </div>
         </div>
     </div>
     <section class="section">
