@@ -39,7 +39,8 @@
                             <td>{{ scrapes.state }}</td>
                             <td>{{ scrapes.completed_date }}</td>
                             <td>{{ scrapes.number_players }}</td>
-                            <td><i class="bi bi-file-earmark-arrow-down-fill"></i></td>
+                            <td><a href="{% url 'scrapejob_csv' pk=scrapes.pk origin=scrapes.origin %}"><i
+                                        class="bi bi-file-earmark-arrow-down-fill"></i></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
