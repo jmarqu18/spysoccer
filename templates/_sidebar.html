@@ -20,6 +20,7 @@
                         <span>Inicio</span>
                     </a>
                 </li>
+                {% if user.is_authenticated %}
                 <li class="{% active 'about' %} sidebar-item">
                     <a href="{% url 'about' %}" class='sidebar-link'>
                         <i class="bi bi-info-square-fill"></i>
@@ -40,12 +41,28 @@
                         <span>Jugadores</span>
                     </a>
                 </li>
-                <li class="{% active 'scoring_request' %} sidebar-item">
-                    <a href="{% url 'scoring_request' %}" class='sidebar-link'>
+                <li class="sidebar-title">Gestión Usuarios</li>
+
+                <li class="sidebar-item has-sub">
+                    <a href="#" class='sidebar-link'>
                         <i class="bi bi-calculator-fill"></i>
-                        <span>Cálculo de scoring</span>
+                        <span>Utilidades</span>
                     </a>
+                    <ul class="submenu ">
+                        <li class="{% active 'scoring_request' %} submenu-item">
+                            <a href="{% url 'scoring_request' %}">
+                                Scoring
+                            </a>
+                        </li>
+                        <li class="{% active 'similarity_request' %} submenu-item">
+                            <a href="{% url 'similarity_request' %}">
+                                Similaridad
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
+                {% endif %}
                 {% block content %}
 
 
