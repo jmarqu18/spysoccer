@@ -58,6 +58,18 @@ class Player(models.Model):
         pass
 
     @property
+    def scorings(self):
+        if self.id:
+            return Scoring.objects.filter(player=self.id)
+        return Scoring.objects.none()
+
+    @property
+    def current_scoring(self):
+        if self.id:
+            return Scoring.objects.filter(player=self.id).latest()
+        return Scoring.objects.none()
+
+    @property
     def age(self):
         return (
             timezone.now().year
@@ -896,10 +908,12 @@ class Scoring(models.Model):
 
         verbose_name = "Scoring"
         verbose_name_plural = "Scorings"
+        ordering = ["scoring"]
+        get_latest_by = "-calculate_date"
 
     def __str__(self):
         """Unicode representation of Scoring."""
-        return "{} - ({})".format(self.player, self.scoring)
+        return "{} - ({})".format(self.scoring)
 
     def save(self, *args, **kwargs):
         super(Scoring, self).save(*args, **kwargs)

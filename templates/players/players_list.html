@@ -37,6 +37,7 @@
                             <th>Edad</th>
                             <th>Altura</th>
                             <th>Pie</th>
+                            <th>Scoring</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -50,6 +51,7 @@
                             <td>{{ player.age }}</td>
                             <td>{{ player.height }}</td>
                             <td>{{ player.foot }}</td>
+                            <td>{{ player.current_scoring.scoring }}</td>
                             <td><a href="#"><i class="bi bi-file-earmark-arrow-down-fill"></i> test</a></td>
                         </tr>
                         {% endfor %}
