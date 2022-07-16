@@ -52,7 +52,7 @@
     vertical-align: middle;
 }
 
-.dataTable-table>tbody>tr>td>img {
+.dataTable>tbody>tr>td>img {
     border-radius: 50%;
 }
 
@@ -60,7 +60,9 @@
     background-color: #014751;
     border-color: #014751;
     box-shadow: 0 2px 5px rgba(0, 135, 81, 0.5);
+    border-radius: 50%;
 }
+
 
 a {
     color: #108AA1;

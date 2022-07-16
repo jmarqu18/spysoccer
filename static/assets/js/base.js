@@ -1,5 +1,3 @@
-console.log("Javascript está aquí!")
-
 function slideToggle(t, e, o) {
     if (0 === t.clientHeight) {
         j(t, e, o, !0);
