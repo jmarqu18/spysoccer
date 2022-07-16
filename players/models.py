@@ -913,11 +913,83 @@ class Scoring(models.Model):
 
     def __str__(self):
         """Unicode representation of Scoring."""
-        return "{} - ({})".format(self.scoring)
+        return "{}".format(self.scoring)
 
     def save(self, *args, **kwargs):
         super(Scoring, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Return absolute url for Scoring."""
+        return ""
+
+
+class SimilarityRequest(models.Model):
+    id = models.UUIDField(editable=False, primary_key=True, default=uuid.uuid4)
+    request_date = models.DateTimeField(
+        auto_now_add=True, verbose_name="Fecha de la petición"
+    )
+    index_used = models.ForeignKey(
+        Index, on_delete=models.RESTRICT, verbose_name="Index usado"
+    )
+    minutes_played_min = models.IntegerField(
+        default=600, validators=[MaxValueValidator(10000), MinValueValidator(90)]
+    )
+    season_request = models.CharField(max_length=50, default="2021-2022")
+
+    class Meta:
+        """Meta definition for SimilarityRequest."""
+
+        verbose_name = "Cálculo de Similaridad"
+        verbose_name_plural = "Cálculos de Similaridad"
+
+    def __str__(self):
+        """Unicode representation of SimilarityRequest."""
+        return "{} ({})".format(self.index_used, self.season_request)
+
+    def save(self, *args, **kwargs):
+        super(SimilarityRequest, self).save(*args, **kwargs)
+
+
+class Similarity(models.Model):
+    """Model definition for Similarity."""
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    player = models.ForeignKey(
+        Player, blank=False, on_delete=models.CASCADE, verbose_name="Jugador"
+    )
+    similar_player = models.ForeignKey(
+        Player,
+        blank=False,
+        on_delete=models.CASCADE,
+        verbose_name="Jugador similar",
+        related_name="compared_player",
+    )
+    similarity = models.FloatField(blank=False, verbose_name="Similitud")
+    calculate_date = models.DateTimeField(
+        auto_now_add=True, blank=False, verbose_name="Fecha del cálculo"
+    )
+    similarity_request = models.ForeignKey(
+        SimilarityRequest,
+        on_delete=models.CASCADE,
+        verbose_name="Petición de actualización de Similitud",
+        null=True,
+    )
+
+    class Meta:
+        """Meta definition for Similarity."""
+
+        verbose_name = "Análisis de Similitud"
+        verbose_name_plural = "Análisis de Similitud"
+        ordering = ["player", "-similarity"]
+        get_latest_by = "-calculate_date"
+
+    def __str__(self):
+        """Unicode representation of Similarity."""
+        return "{}".format(self.similarity)
+
+    def save(self, *args, **kwargs):
+        super(Similarity, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Return absolute url for Similarity."""
         return ""

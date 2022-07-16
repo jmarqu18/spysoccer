@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import Player, PlayerStats, GoalkeeperStats, Index, Scoring, ScoringRequest
+from .models import (
+    Player,
+    PlayerStats,
+    GoalkeeperStats,
+    Index,
+    Scoring,
+    ScoringRequest,
+    Similarity,
+    SimilarityRequest,
+)
 
 
 class PlayerAdmin(admin.ModelAdmin):
@@ -36,9 +45,19 @@ class ScoringRequestAdmin(admin.ModelAdmin):
     pass
 
 
+class SimilarityAdmin(admin.ModelAdmin):
+    pass
+
+
+class SimilarityRequestAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(PlayerStats, PlayerStatsAdmin)
 admin.site.register(GoalkeeperStats, GoalkeeperStatsAdmin)
 admin.site.register(Index, IndexAdmin)
 admin.site.register(Scoring, ScoringAdmin)
 admin.site.register(ScoringRequest, ScoringRequestAdmin)
+admin.site.register(Similarity, SimilarityAdmin)
+admin.site.register(SimilarityRequest, SimilarityRequestAdmin)

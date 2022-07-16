@@ -8,6 +8,7 @@ import csv
 import pandas as pd
 import uuid
 
+
 from players.models import (
     GoalkeeperStats,
     Player,
@@ -15,9 +16,11 @@ from players.models import (
     Index,
     Scoring,
     ScoringRequest,
+    Similarity,
+    SimilarityRequest,
 )
-from players.scoring import set_scoring, filter_context_data
-from players.forms import CalculateScoringForm
+from players.scoring import set_scoring, filter_context_data, set_similarity
+from players.forms import CalculateScoringForm, CalculateSimilarityForm
 
 
 class PlayersListView(ListView):
@@ -136,3 +139,57 @@ def scoring_request(request):
             return redirect("players_list")
 
     return render(request, "players/calculate_scoring.html", {"form": form})
+
+
+def similarity_request(request):
+    form = CalculateSimilarityForm(request.POST or None)
+    if request.method == "POST":
+
+        if form.is_valid():
+            # Creamos una línea de scoring request
+            form = form.save(commit=False)
+            form.id = uuid.uuid4()
+            form.save()
+
+            # La primera aproximación será hacer el cálculo de similitud por posición agrupada
+
+            # Nos traemos los datos del Index seleccionado
+            index_x = form.index_used
+            index = Index.objects.get(index_name=index_x)
+            index_data = index.index_data
+            metricas = list(index_data.keys())
+            index_position = index.position_norm
+            minutes_x = form.minutes_played_min
+            new_sreq = SimilarityRequest.objects.get(id=form.id)
+
+            # Nos traemos los datos de jugadores y porteros como dataframes
+            if index_position == "Portero":
+                data = pd.DataFrame.from_dict(GoalkeeperStats.objects.values())
+            else:
+                data = pd.DataFrame.from_dict(
+                    PlayerStats.objects.filter(
+                        player__in=Player.objects.filter(position_norm=index_position)
+                    ).values()
+                )  # TODO Filtrar por temporadas en la vista
+
+            # comenzamos a realizar los filtrados por Competición y Posición
+            data_filtered = filter_context_data(data, minutes_x)
+
+            data_similarity = set_similarity(data_filtered, metricas)
+
+            data_similarity_create = [
+                Similarity(
+                    player=Player.objects.get(id=row["player_id"]),
+                    similar_player=Player.objects.get(id=row["similar_player_id"]),
+                    similarity=row["similarity"],
+                    similarity_request=new_sreq,
+                )
+                for i, row in data_similarity.iterrows()
+            ]
+
+            if data_similarity_create:
+                Similarity.objects.bulk_create(data_similarity_create, 1000)
+
+            return redirect("players_list")
+
+    return render(request, "players/calculate_similarity.html", {"form": form})
