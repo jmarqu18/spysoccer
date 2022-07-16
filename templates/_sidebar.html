@@ -40,6 +40,12 @@
                         <span>Jugadores</span>
                     </a>
                 </li>
+                <li class="{% active 'scoring_request' %} sidebar-item">
+                    <a href="{% url 'scoring_request' %}" class='sidebar-link'>
+                        <i class="bi bi-calculator-fill"></i>
+                        <span>Cálculo de scoring</span>
+                    </a>
+                </li>
                 {% block content %}
 
 

@@ -1,6 +1,9 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+from django.contrib.auth import get_user_model
 
 import uuid
 
@@ -75,12 +78,13 @@ class Player(models.Model):
 class Index(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     index_name = models.CharField(
-        max_length=50, blank=False, verbose_name="Nombre del Index"
+        max_length=6,
+        unique=True,
+        verbose_name="Nombre del Index",
+        help_text="Máximo 6 caracteres",
     )
     description = models.TextField(blank=True, verbose_name="Descripción corta")
-    position_norm = models.CharField(
-        max_length=30, verbose_name="Posición normalizada"
-    )  # TODO Sacar a una tabla de posiciones normalizadas?
+    position_norm = models.CharField(max_length=30, verbose_name="Posición normalizada")
     index_data = models.JSONField(verbose_name="Métricas y pesos del Index")
     creation_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
@@ -89,15 +93,11 @@ class Index(models.Model):
         """Meta definition for Index."""
 
         verbose_name = "Index"
-        verbose_name_plural = "Indexes"
+        verbose_name_plural = "Index"
 
     def __str__(self):
         """Unicode representation of Index."""
-        return "{} - ({})".format(self.index_name, self.position_norm)
-
-    def save(self, *args, **kwargs):
-        """Save method for Index."""
-        pass
+        return self.index_name
 
     def get_absolute_url(self):
         """Return absolute url for Index."""
@@ -837,6 +837,39 @@ class GoalkeeperStats(models.Model):
         return ""
 
 
+def getUser():
+    """La usamos para setear los reportes cuando
+    es borrado el usuario que los hace, y no perderlos"""
+    return get_user_model().objects.get_or_create(username="user_deleted")[0]
+
+
+class ScoringRequest(models.Model):
+    id = models.UUIDField(editable=False, primary_key=True, default=uuid.uuid4)
+    request_date = models.DateTimeField(
+        auto_now_add=True, verbose_name="Fecha de la petición"
+    )
+    index_used = models.ForeignKey(
+        Index, on_delete=models.RESTRICT, verbose_name="Index usado"
+    )
+    minutes_played_min = models.IntegerField(
+        default=600, validators=[MaxValueValidator(10000), MinValueValidator(90)]
+    )
+    season_request = models.CharField(max_length=50, default="2021-2022")
+
+    class Meta:
+        """Meta definition for ScoringRequest."""
+
+        verbose_name = "Cálculo de Scoring"
+        verbose_name_plural = "Cálculos de Scoring"
+
+    def __str__(self):
+        """Unicode representation of ScoringRequest."""
+        return "{} ({})".format(self.index_used, self.season_request)
+
+    def save(self, *args, **kwargs):
+        super(ScoringRequest, self).save(*args, **kwargs)
+
+
 class Scoring(models.Model):
     """Model definition for Scoring."""
 
@@ -845,13 +878,18 @@ class Scoring(models.Model):
         Player, blank=False, on_delete=models.CASCADE, verbose_name="Jugador"
     )
     scoring = models.FloatField(blank=False, verbose_name="Scoring")
+    rank_in_context = models.PositiveIntegerField(
+        default=0, blank=True, verbose_name="Ránking en este contexto"
+    )
     calculate_date = models.DateTimeField(
         auto_now_add=True, blank=False, verbose_name="Fecha del cálculo"
     )
-    index_used = models.ForeignKey(
-        Index, on_delete=models.RESTRICT, verbose_name="Index usado"
+    scoring_request = models.ForeignKey(
+        ScoringRequest,
+        on_delete=models.CASCADE,
+        verbose_name="Petición de actualización de Scoring",
+        null=True,
     )
-    active = models.BooleanField(default=True)
 
     class Meta:
         """Meta definition for Scoring."""
@@ -864,8 +902,7 @@ class Scoring(models.Model):
         return "{} - ({})".format(self.player, self.scoring)
 
     def save(self, *args, **kwargs):
-        """Save method for Scoring."""
-        pass
+        super(Scoring, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Return absolute url for Scoring."""

@@ -33,7 +33,7 @@ class PlayerUnderstatAdmin(admin.ModelAdmin):
 
 
 class PlayerFbrefGKAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ["fb_player_name"]
 
 
 class PlayerFbrefAdmin(admin.ModelAdmin):

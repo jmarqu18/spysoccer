@@ -1,11 +1,23 @@
 from datetime import date
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import ListView, DetailView
 
 import csv
+import pandas as pd
+import uuid
 
-from players.models import Player
+from players.models import (
+    GoalkeeperStats,
+    Player,
+    PlayerStats,
+    Index,
+    Scoring,
+    ScoringRequest,
+)
+from players.scoring import set_scoring, filter_context_data
+from players.forms import CalculateScoringForm
 
 
 class PlayersListView(ListView):
@@ -42,3 +54,85 @@ def players_csv(request):
         writer.writerow(row)
 
     return response
+
+
+def scoring_request(request):
+    form = CalculateScoringForm(request.POST or None)
+    if request.method == "POST":
+
+        if form.is_valid():
+            # Creamos una línea de scoring request
+            form = form.save(commit=False)
+            # form.user = request.user
+            form.id = uuid.uuid4()
+            form.save()
+
+            # Pasamos al cálulo de scoring de los jugadores
+            # Definimos las ligas sobre las que haremos el cálculo
+            competitions = [
+                "La Liga",
+                "Premier League",
+                "Bundesliga",
+                "Serie A",
+                "Ligue 1",
+            ]
+            neg_metrics = [
+                "goals_against",
+                "goals_against_90",
+                "offsides",
+                "red_cards",
+                "yellow_cards",
+                "double_yellow_cards",
+            ]
+            positions = [
+                "Central",
+                "Lateral",
+                "Mediocentro",
+                "Medio Ofensivo",
+                "Extremo",
+                "Delantero",
+            ]
+
+            # La primera aproximación será hacer el cálculo de scoring por liga y posición agrupada
+
+            # Nos traemos los datos del Index seleccionado
+            index_x = form.index_used
+            index = Index.objects.get(index_name=index_x)
+            index_data = index.index_data
+            metricas = list(index_data.keys())
+            pesos = list(index_data.values())
+            index_position = index.position_norm
+            minutes_x = form.minutes_played_min
+            new_sreq = ScoringRequest.objects.get(id=form.id)
+
+            # Nos traemos los datos de jugadores y porteros como dataframes
+            if index_position == "Portero":
+                data = pd.DataFrame.from_dict(GoalkeeperStats.objects.values())
+            else:
+                data = pd.DataFrame.from_dict(
+                    PlayerStats.objects.filter(
+                        player__in=Player.objects.filter(position_norm=index_position)
+                    ).values()
+                )  # TODO Filtrar por temporadas en la vista
+
+            # comenzamos a realizar los filtrados por Competición y Posición
+            data_filtered = filter_context_data(data, minutes_x)
+
+            data_scoring = set_scoring(data_filtered, metricas, pesos)
+
+            data_scoring_create = [
+                Scoring(
+                    player=Player.objects.get(id=row["player_id"]),
+                    scoring=row["scoring"],
+                    rank_in_context=row["rank"],
+                    scoring_request=new_sreq,
+                )
+                for i, row in data_scoring.iterrows()
+            ]
+
+            if data_scoring_create:
+                Scoring.objects.bulk_create(data_scoring_create, 1000)
+
+            return redirect("players_list")
+
+    return render(request, "players/calculate_scoring.html", {"form": form})

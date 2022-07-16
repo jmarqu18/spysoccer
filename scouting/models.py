@@ -10,8 +10,8 @@ from players.models import Player
 
 def getUser():
     """La usamos para setear los reportes cuando
-    es borrado el usuario qeu los hace, y no perderlos"""
-    return get_user_model().objects.get_or_create(username="scout_anonymous")[0]
+    es borrado el usuario que los hace, y no perderlos"""
+    return get_user_model().objects.get_or_create(username="user_deleted")[0]
 
 
 class PerformanceReport(models.Model):
