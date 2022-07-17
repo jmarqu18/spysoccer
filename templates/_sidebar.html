@@ -41,7 +41,14 @@
                         <span>Jugadores</span>
                     </a>
                 </li>
-                <li class="sidebar-title">Gestión Usuarios</li>
+                <li class="sidebar-title">Scouting</li>
+                <li class="{% active 'reports_list_view' %} sidebar-item">
+                    <a href="{% url 'reports_list_view' %}" class='sidebar-link'>
+                        <span class="fa-fw select-all fas"></span>
+                        <span>Informes de jugador</span>
+                    </a>
+                </li>
+                <li class="sidebar-title">Herramientas</li>
 
                 <li class="sidebar-item has-sub">
                     <a href="#" class='sidebar-link'>
@@ -63,10 +70,7 @@
                 </li>
 
                 {% endif %}
-                {% block content %}
 
-
-                {% endblock content %}
                 <li class="sidebar-title">Gestión Usuarios</li>
 
                 {% if user.is_authenticated %}
