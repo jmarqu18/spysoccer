@@ -1,0 +1,112 @@
+{% extends "_base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Ficha de Jugador - SpySoccer{% endblock title %}
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                {% block titular %}{% endblock titular %}
+                <h2>Ficha de Jugador</h2>
+            </div>
+        </div>
+    </div>
+    <section class="section" id="player">
+        <div class="row">
+            <div class="card col-12 col-lg-3 col-md-6">
+                <div class="card-header">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar avatar-spy">
+                                <img src="{{ player.image }}" alt="{{ player.name }}">
+                            </div>
+                            <div class="ms-3 name">
+                                <h3 class="font-bold">{{ player.name }}</h3>
+                                <h6>{{ player.position }} - {{ player.age }} años</h6>
+                                <h6 class="text-muted mb-0">Equipo: {{player.playerstats_set.all.0.team}}</h6>
+                                <h6 class="text-muted mb-0">Comp.: {{player.playerstats_set.all.0.competition}}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card col-12 col-lg-4 col-md-6">
+                <div class="card-header">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h5>Contrato hasta: {{ player.playerstats_set.all.0.team_contract_expires }}</h5>
+                            </div>
+
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h6>Fichado desde: {{ player.playerstats_set.all.0.team_date_joined }}</h6>
+                            </div>
+
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h5>Valor de mercado actual: {{ player.playerstats_set.all.0.round_value_market}}M €
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h5>Salario anual (€): {{ player.playerstats_set.all.0.round_salary }}M €</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="card col-12 col-lg-4 col-md-6">
+                <div class="card-header">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <h2 id="scoring"><span class="circle">{{ player.round_scoring }}</span></h2>
+                            <div class="ms-3">
+                                <h3 class="font-bold">Scoring</h3>
+                                <h6>Rating de Scouts: {{ player.performancereport_set.all.0.rating }}</h6>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <h2>Datos y métricas estadísticas:</h2>
+            <div class="card col-11">
+                <div class="card-header">
+                    {% for item in player.playerstats_set.all %}
+                    <p>item.minutes_played</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% block scripts %}
+
+
+{% endblock scripts %}
+
+
+{% endblock content %}

@@ -29,6 +29,15 @@ class PlayersListView(ListView):
     template_name = "players/players_list.html"
 
 
+class PlayerView(ListView):
+    model = Player
+    context_object_name = "player"
+    template_name = "players/player.html"
+
+    def get_queryset(self):
+        return Player.objects.get(pk=self.kwargs["pk"])
+
+
 class PlayersPositionListView(ListView):
     model = Player
     context_object_name = "players_list"

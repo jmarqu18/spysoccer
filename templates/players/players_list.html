@@ -53,7 +53,10 @@
                             <td>{{ player.height }}</td>
                             <td>{{ player.foot }}</td>
                             <td>{{ player.current_scoring.scoring }}</td>
-                            <td><a href="{% url 'creation_report' player.pk %}" title="Crear Informe de Jugador"><span
+                            <td>
+                                <!-- <a href="{% url 'player_view' player.pk %}" title="Ver Ficha de Jugador"><span
+                                        class="fa-fw select-all fas"></span></a> -->
+                                <a href="{% url 'creation_report' player.pk %}" title="Crear Informe de Jugador"><span
                                         class="fa-fw select-all fas"></span></a>
                             </td>
                         </tr>

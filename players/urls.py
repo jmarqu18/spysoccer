@@ -2,6 +2,7 @@ from django.urls import path
 
 from players.views import (
     PlayersListView,
+    PlayerView,
     PlayersPositionListView,
     ScoringRequestList,
     SimilarityRequestList,
@@ -14,6 +15,7 @@ from players.views import (
 
 urlpatterns = [
     path("", PlayersListView.as_view(), name="players_list"),
+    path("<uuid:pk>/", PlayerView.as_view(), name="player_view"),
     path("csv_players/", players_csv, name="players_csv"),
     path("scoring_request/", ScoringRequestList.as_view(), name="scoring_request_list"),
     path("scoring_request/<uuid:pk>/", ScoringList.as_view(), name="scoring_list"),

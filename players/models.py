@@ -70,6 +70,16 @@ class Player(models.Model):
         return Scoring.objects.none()
 
     @property
+    def current_team(self):
+        if self.id:
+            if self.position_norm == "Portero":
+                data_player = GoalkeeperStats.objects.filter(player=self.pk).latest()
+            else:
+                data_player = PlayerStats.objects.filter(player=self.pk).latest()
+            return data_player.team
+        return PlayerStats.objects.none()
+
+    @property
     def age(self):
         return (
             timezone.now().year
@@ -85,6 +95,11 @@ class Player(models.Model):
             "calculate_date"
         )
         return current_scoring.scoring
+
+    @property
+    def round_scoring(self):
+        current_scoring = Scoring.objects.filter(player=self.pk).latest()
+        return int(round(current_scoring.scoring, 0))
 
 
 class Index(models.Model):
@@ -654,6 +669,22 @@ class PlayerStats(models.Model):
         """Return absolute url for PlayerStats."""
         return ""
 
+    @property
+    def round_value_market(self):
+        if self.current_value:
+            value = self.current_value / 1000000
+        else:
+            value = ""
+        return value
+
+    @property
+    def round_salary(self):
+        if self.salary:
+            value = round(self.salary / 1000000, 2)
+        else:
+            value = ""
+        return value
+
 
 """ TODO Añadir estos campos con cariño para una pantalla especial sólo de "Aportación al equipo"
     fb_Team_Success_PPM = models.FloatField(
@@ -847,6 +878,22 @@ class GoalkeeperStats(models.Model):
     def get_absolute_url(self):
         """Return absolute url for GoalkeeperStats."""
         return ""
+
+    @property
+    def round_value_market(self):
+        if self.current_value:
+            value = self.current_value / 1000000
+        else:
+            value = ""
+        return value
+
+    @property
+    def round_salary(self):
+        if self.salary:
+            value = round(self.salary / 1000000, 2)
+        else:
+            value = ""
+        return value
 
 
 def getUser():
