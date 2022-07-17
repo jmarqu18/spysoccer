@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import CreateView
 
 from players.models import Player
@@ -19,22 +20,42 @@ from .forms import (
 class CreateReport(CreateView):
     Model = PerformanceReport
     template_name = "scouting/create_report.html"
-    success_url = "portero"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["player_pk"] = self.kwargs["pk"]
+        context["player"] = Player.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.scout = self.request.user
+        form.instance.player = Player.objects.get(pk=self.kwargs["pk"])
+        # print(form.instance.job)
+        # print(form.instance.technician)
+        context = {
+            "player_pk": self.kwargs["pk"],
+            "player": Player.objects.get(pk=self.kwargs["pk"]),
+        }
+        return super().form_valid(form)
 
     def get_form_class(self):
-        if self.kwargs["position"] == "portero":
+        player_x = Player.objects.get(pk=self.kwargs["pk"])
+        if player_x.position_norm == "Portero":
             return PerformanceReportPorteroForm
-        elif self.kwargs["position"] == "central":
+        elif player_x.position_norm == "Central":
             return PerformanceReportCentralForm
-        elif self.kwargs["position"] == "lateral":
+        elif player_x.position_norm == "Lateral":
             return PerformanceReportLateralForm
-        elif self.kwargs["position"] == "mediocentro":
+        elif player_x.position_norm == "Mediocentro":
             return PerformanceReportMediocentroForm
-        elif self.kwargs["position"] == "medio_ofensivo":
+        elif player_x.position_norm == "Medio Ofensivo":
             return PerformanceReportMedioOfensivoForm
-        elif self.kwargs["position"] == "extremo":
+        elif player_x.position_norm == "Extremo":
             return PerformanceReportExtremoForm
-        elif self.kwargs["position"] == "delantero":
+        elif player_x.position_norm == "Delantero":
             return PerformanceReportDelanteroForm
         else:
             return PerformanceReportForm
+
+    def get_success_url(self):
+        return reverse("players_list")

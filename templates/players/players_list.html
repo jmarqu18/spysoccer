@@ -52,7 +52,8 @@
                             <td>{{ player.height }}</td>
                             <td>{{ player.foot }}</td>
                             <td>{{ player.current_scoring.scoring }}</td>
-                            <td><a href="#"><i class="bi bi-file-earmark-arrow-down-fill"></i> test</a></td>
+                            <td><a href="{% url 'creation_report' player.pk %}"><i class="bi bi-card-checklist"></i></a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

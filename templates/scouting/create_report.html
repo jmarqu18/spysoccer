@@ -20,7 +20,21 @@
     </div>
     <section class="section">
         <div class="card">
-            <div class="card-header"></div>
+            <div class="card-header">
+                <div class="col-12 col-lg-5">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar avatar-spy">
+                            <img src="{{ player.image }}" alt="{{ player.name }}">
+                        </div>
+                        <div class="ms-3 name">
+                            <h3 class="font-bold">{{ player.name }}</h3>
+                            <h6 class="text-muted mb-0">{{ player.position }}</h6>
+                            <h6 class="text-muted mb-0">{{ player.age }} años</h6>
+                        </div>
+                    </div>
+                    <h3></h3>
+                </div>
+            </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}

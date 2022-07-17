@@ -75,3 +75,8 @@ a:hover {
 .colors {
     color: #00d37f #014751 #0f2830 #f8fbff #aff8c8 #ffeeb4 #d2c4fb;
 }
+
+.avatar-spy img {
+    height: 8rem;
+    width: 7.2rem;
+}

@@ -6,15 +6,13 @@ from .models import PerformanceReport
 class PerformanceReportForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
-        exclude = ["id"]
+        exclude = ["id", "scout", "player"]
 
 
 class PerformanceReportPorteroForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -49,8 +47,6 @@ class PerformanceReportCentralForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -80,8 +76,6 @@ class PerformanceReportLateralForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -111,8 +105,6 @@ class PerformanceReportMediocentroForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -142,8 +134,6 @@ class PerformanceReportMedioOfensivoForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -173,8 +163,6 @@ class PerformanceReportExtremoForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",
@@ -204,8 +192,6 @@ class PerformanceReportDelanteroForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
         fields = [
-            "scout",
-            "player",
             "match_date",
             "notes",
             "height",

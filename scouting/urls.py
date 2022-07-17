@@ -4,5 +4,5 @@ from .views import CreateReport
 
 
 urlpatterns = [
-    path("create/<position>", CreateReport.as_view(), name="creation_report")
+    path("create/<uuid:pk>/", CreateReport.as_view(), name="creation_report")
 ]
