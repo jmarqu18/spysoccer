@@ -16,18 +16,18 @@
 
                 <li class="{% active 'home' %} sidebar-item">
                     <a href="{% url 'home' %}" class='sidebar-link'>
-                        <i class="bi bi-bookmark-star"></i>
-                        <span>Inicio</span>
+                        <i class="bi bi-info-square-fill"></i>
+                        <span>El Proyecto</span>
                     </a>
                 </li>
                 {% if user.is_authenticated %}
-                <li class="{% active 'about' %} sidebar-item">
+                <!-- <li class="{% active 'about' %} sidebar-item">
                     <a href="{% url 'about' %}" class='sidebar-link'>
                         <i class="bi bi-info-square-fill"></i>
                         <span>Información</span>
                     </a>
 
-                </li>
+                </li> -->
 
                 <li class="sidebar-item has-sub">
                     <a href="#" class='sidebar-link'>
@@ -128,12 +128,12 @@
                         <span>Login</span>
                     </a>
                 </li>
-                <li class="{% active 'account_signup' %} sidebar-item">
+                <!-- <li class="{% active 'account_signup' %} sidebar-item">
                     <a href="{% url 'account_signup' %}" class='sidebar-link'>
                         <i class="bi bi-plus-circle"></i>
                         <span>Registrarse</span>
                     </a>
-                </li>
+                </li> -->
                 {% endif %}
 
 

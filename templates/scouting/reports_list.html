@@ -11,9 +11,14 @@
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
+            <div class="col-12 col-md-9 order-md-1 order-last">
                 {% block titular %}{% endblock titular %}
                 <h2>Reportes de rendimiento propios</h2>
+                <p class="text-subtitle text-muted">En esta pantalla se verán todos los Informes de seguimiento que
+                    nuestros Scouts hayan realizado sobre los jugadores de la base de datos interna. <br>Para realizar
+                    un informe nuevo, ve a cualquier <a href="{% url 'players_list' %}">Listado de jugadores</a> y pulsa
+                    en el icono con el <b>+</b> que hay en
+                    la columna de <i>Acciones.</i> </p>
             </div>
             <!-- <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav class="breadcrumb-header float-start float-lg-end">
