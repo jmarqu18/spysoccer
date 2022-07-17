@@ -10,4 +10,5 @@ urlpatterns = [
     path("", include("pages.urls")),
     path("external_data/", include("scrapes.urls")),
     path("players/", include("players.urls")),
+    path("scouting/", include("scouting.urls")),
 ]
