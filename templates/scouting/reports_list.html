@@ -35,6 +35,7 @@
                             <th>Scout</th>
                             <th>Fecha de la visita</th>
                             <th>Fecha del reporte</th>
+                            <th>Rating</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -48,6 +49,7 @@
                             <td>{{ report.scout.username }}</td>
                             <td>{{ report.match_date }}</td>
                             <td>{{ report.creation_date }}</td>
+                            <td>{{ report.rating }}</td>
                             <td><a href="{% url 'update_report_view' report.pk %}"><span
                                         class="fa-fw select-all fas"></span></a>
                                 <a href="{% url 'delete_report_view' report.pk %}"><i class="bi bi-trash-fill"></i></a>

@@ -6,7 +6,7 @@ from .models import PerformanceReport
 class PerformanceReportForm(forms.ModelForm):
     class Meta:
         model = PerformanceReport
-        exclude = ["id", "scout", "player"]
+        exclude = ["id", "scout", "player", "rating"]
 
 
 class PerformanceReportPorteroForm(forms.ModelForm):

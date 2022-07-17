@@ -308,6 +308,11 @@ class PerformanceReport(models.Model):
         validators=[MaxValueValidator(5), MinValueValidator(0)],
         verbose_name="Agarre del balón",
     )
+    rating = models.PositiveIntegerField(
+        default=0,
+        validators=[MaxValueValidator(5), MinValueValidator(0)],
+        verbose_name="Rating del Informe",
+    )
 
     class Meta:
         """Meta definition for PerformanceReport."""
@@ -320,6 +325,59 @@ class PerformanceReport(models.Model):
         return "{}".format(self.player)
 
     def save(self, *args, **kwargs):
+        self.rating = (
+            self.height
+            + self.physical_power
+            + self.right_foot
+            + self.left_foot
+            + self.determined
+            + self.intelligence
+            + self.positioning
+            + self.turns
+            + self.back_movement
+            + self.lateral_movement
+            + self.pace
+            + self.quick_short_distance
+            + self.covering_depth
+            + self.short_passing
+            + self.long_passing
+            + self.aerial_game
+            + self.tackling
+            + self.anticipating
+            + self.command_of_defence
+            + self.traveling_ball
+            + self.composture_on_the_ball
+            + self.technique
+            + self.striking_ability
+            + self.vision
+            + self.key_passing
+            + self.link_up_play
+            + self.hold_up_play
+            + self.dynamism
+            + self.decision_making
+            + self.off_the_ball_movements
+            + self.trickery
+            + self.dealing_with_offside
+            + self.work_rate
+            + self.shooting
+            + self.through_passing
+            + self.coverings
+            + self.box_to_box_ability
+            + self.build_up_capacity
+            + self.defensive_capacity
+            + self.lateral_crosses
+            + self.arrival_baseline
+            + self.gk_saves
+            + self.gk_footwork
+            + self.gk_aerial_game
+            + self.gk_penalty_saves
+            + self.gk_comunication
+            + self.gk_goal_kicks
+            + self.gk_one_to_one
+            + self.gk_box_domain
+            + self.gk_crosses
+            + self.gk_grip
+        )
         super(PerformanceReport, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
