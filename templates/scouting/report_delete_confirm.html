@@ -1,0 +1,47 @@
+{% extends "_base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Confirmación de borrado - SpySoccer{% endblock title %}
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                {% block titular %}{% endblock titular %}
+                <h2>Confirmación de borrado de reporte</h2>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <form method="post">
+                    {% csrf_token %}
+                    <p>¿Estás seguro que quieres borrar el reporte del <b>{{ object.match_date }}</b> de
+                        <b>{{ object.player.name }}</b>
+                        realizado por {{ object.scout }} ?
+                    </p>
+                    <button class="btn icon icon-left btn-danger" type="submit">Borrar informe
+                    </button>
+                </form>
+            </div>
+        </div>
+
+</div>
+</section>
+</div>
+
+
+{% block scripts %}
+
+
+{% endblock scripts %}
+
+
+{% endblock content %}

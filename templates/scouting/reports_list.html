@@ -1,0 +1,76 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Jugadores - SpySoccer{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'assets/css/pages/simple-datatables.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                {% block titular %}{% endblock titular %}
+                <h2>Reportes de rendimiento propios</h2>
+            </div>
+            <!-- <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav class="breadcrumb-header float-start float-lg-end">
+                    <a href="{% url 'players_csv' %}">Descargar CSV</a>
+                </nav>
+            </div> -->
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Posición</th>
+                            <th>Scout</th>
+                            <th>Fecha de la visita</th>
+                            <th>Fecha del reporte</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports_list %}
+                        <tr>
+                            <td><img src="{{ report.player.image }}" alt="{{ report.player.name }}" width="35"
+                                    height="40"></td>
+                            <td>{{ report.player.name }}</td>
+                            <td>{{ report.player.position }}</td>
+                            <td>{{ report.scout.username }}</td>
+                            <td>{{ report.match_date }}</td>
+                            <td>{{ report.creation_date }}</td>
+                            <td><a href="{% url 'update_report_view' report.pk %}"><span
+                                        class="fa-fw select-all fas"></span></a>
+                                <a href="{% url 'delete_report_view' report.pk %}"><i class="bi bi-trash-fill"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% block scripts %}
+
+
+<script src="{% static 'assets/js/extensions/simple-datatables.js' %}"></script>
+
+{% endblock scripts %}
+
+
+{% endblock content %}
