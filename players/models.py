@@ -864,9 +864,13 @@ class ScoringRequest(models.Model):
         Index, on_delete=models.RESTRICT, verbose_name="Index usado"
     )
     minutes_played_min = models.IntegerField(
-        default=600, validators=[MaxValueValidator(10000), MinValueValidator(90)]
+        default=600,
+        validators=[MaxValueValidator(10000), MinValueValidator(90)],
+        verbose_name="Mínimo de minutos jugados",
     )
-    season_request = models.CharField(max_length=50, default="2021-2022")
+    season_request = models.CharField(
+        max_length=50, default="2021-2022", verbose_name="Temporada del cálculo"
+    )
 
     class Meta:
         """Meta definition for ScoringRequest."""

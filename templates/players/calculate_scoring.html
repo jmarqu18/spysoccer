@@ -15,18 +15,25 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 {% block titular %}{% endblock titular %}
-                <h2>Jugadores registrados en SpySoccer</h2>
+                <h2>Valores para el cálculo del Scoring</h2>
+                <p class="text-subtitle text-muted">Selecciona los valores del Index que quieras usar con el que
+                    filtraremos por Posición, además de
+                    seleccionar una serie de métricas y sus pesos correspondientes.</p>
+                <p class="text-subtitle text-muted">En esta versión <i>alpha</i> de <b>SpySoccer</b>, la adición de
+                    nuevos
+                    Index está limitada.</p>
             </div>
         </div>
     </div>
     <section class="section">
-        <div class="card">
-            <div class="card-header"></div>
+        <div class="card col-12 col-md-6">
+            <div class="card-header">
+            </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button class="button is-success is-fullwidth is-medium mt-5" type="submit">Calcular Scoring
+                    <button class="btn icon icon-left btn-success" type="submit">Calcular Scoring
                     </button>
                 </form>
 

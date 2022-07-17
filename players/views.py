@@ -38,6 +38,20 @@ class PlayersPositionListView(ListView):
         return Player.objects.filter(position_norm=self.kwargs["position"])
 
 
+class ScoringRequestList(ListView):
+    model = ScoringRequest
+    context_object_name = "objects_list"
+    template_name = "players/scoring_request_list.html"
+    ordering = "-request_date"
+
+
+class SimilarityRequestList(ListView):
+    model = SimilarityRequest
+    context_object_name = "objects_list"
+    template_name = "players/similarity_request_list.html"
+    ordering = "-request_date"
+
+
 def players_csv(request):
     today = date.today().strftime("%Y%m%d")
     filename = "{}_players.csv".format(today)
