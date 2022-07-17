@@ -1,7 +1,7 @@
 <!-- templates/books/book_list.html -->
 {% extends "_base.html" %}
 {% load static %}
-{% block title %}Cálculos de Scoring - SpySoccer{% endblock title %}
+{% block title %}Scoring - SpySoccer{% endblock title %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'assets/css/pages/simple-datatables.css' %}">
 {% endblock %}
@@ -14,13 +14,18 @@
         <div class="row">
             <div class="col-12 col-md-9 order-md-1 order-last">
                 {% block titular %}{% endblock titular %}
-                <h2>Listado de cálculos de Scoring realizados</h2>
-                <p class="text-subtitle text-muted">En este listado podemos ver las veces que se han recalculado los
-                    Scoring de los jugadores, y con qué index y contexto se han calculado. </p>
+                {% with objects_list|first as last %}
+                <h2>Scoring calculado el {{ last.calculate_date }}</h2>
+                <p class="text-subtitle text-muted">Calculos realizados para la posición de <b>
+                        {{ last.scoring_request.index_used.position_norm }}</b> en la temporada
+                    <b>{{ last.scoring_request.season_request }}</b>
+                </p>
+
+                {% endwith %}
             </div>
             <div class="col-12 col-md-3 order-md-2 order-first">
                 <button class="btn float-start float-lg-end">
-                    <a class="btn icon icon-left btn-info" href="{% url 'scoring_request' %}">Calcular nuevo Scoring</a>
+                    <a class="btn icon icon-left btn-info" href="{% url 'scoring_request_list' %}">Volver al listado</a>
                 </button>
             </div>
         </div>
@@ -34,25 +39,22 @@
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
-                            <th>Fecha del cálculo</th>
+                            <th>Jugador</th>
                             <th>Index usado</th>
                             <th>Posición</th>
-                            <th>Temporada</th>
-                            <th>Mínimo de minutos</th>
-                            <th>Acciones</th>
+                            <th>Scoring</th>
+                            <th>Ranking</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for request in objects_list %}
+                        {% for scoring in objects_list %}
                         <tr>
-                            <td>{{ request.request_date }}</td>
-                            <td>{{ request.index_used }}</td>
-                            <td>{{ request.index_used.position_norm }}</td>
-                            <td>{{ request.season_request }}</td>
-                            <td>{{ request.minutes_played_min }}</td>
-                            <td><a href="{% url 'scoring_list' request.pk %}" title="Ver resultados"><span
-                                        class="fa-fw select-all fas"></span></a>
-                            </td>
+                            <td>{{ scoring.player }}</td>
+                            <td>{{ scoring.scoring_request.index_used }}</td>
+                            <td>{{ scoring.scoring_request.index_used.position_norm }}</td>
+                            <td>{{ scoring.scoring }}</td>
+                            <td>{{ scoring.rank_in_context }}</td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -61,6 +63,12 @@
 
 
             </div>
+            <div class="card-footer">
+                {% with objects_list|first as last2 %}
+                <h4>Métricas usadas en el cálculo:</h4>
+                <p class="text-subtitle">{{ last2.scoring_request.index_used.index_data }}</p>
+            </div>
+            {% endwith %}
         </div>
     </section>
 </div>

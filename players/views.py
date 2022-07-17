@@ -45,6 +45,16 @@ class ScoringRequestList(ListView):
     ordering = "-request_date"
 
 
+class ScoringList(ListView):
+    model = Scoring
+    context_object_name = "objects_list"
+    template_name = "players/scoring_list.html"
+    ordering = "-scoring"
+
+    def get_queryset(self):
+        return Scoring.objects.filter(scoring_request=self.kwargs["pk"])
+
+
 class SimilarityRequestList(ListView):
     model = SimilarityRequest
     context_object_name = "objects_list"
@@ -159,7 +169,7 @@ def scoring_request(request):
             if data_scoring_create:
                 Scoring.objects.bulk_create(data_scoring_create, 1000)
 
-            return redirect("players_list")
+            return redirect("scoring_request_list")
 
     return render(request, "players/calculate_scoring.html", {"form": form})
 
@@ -213,6 +223,6 @@ def similarity_request(request):
             if data_similarity_create:
                 Similarity.objects.bulk_create(data_similarity_create, 1000)
 
-            return redirect("players_list")
+            return redirect("similarity_request_list")
 
     return render(request, "players/calculate_similarity.html", {"form": form})

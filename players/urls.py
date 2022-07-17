@@ -5,6 +5,7 @@ from players.views import (
     PlayersPositionListView,
     ScoringRequestList,
     SimilarityRequestList,
+    ScoringList,
     players_csv,
     scoring_request,
     similarity_request,
@@ -14,6 +15,7 @@ urlpatterns = [
     path("", PlayersListView.as_view(), name="players_list"),
     path("csv_players/", players_csv, name="players_csv"),
     path("scoring_request/", ScoringRequestList.as_view(), name="scoring_request_list"),
+    path("scoring_request/<uuid:pk>/", ScoringList.as_view(), name="scoring_list"),
     path(
         "similarity_request/",
         SimilarityRequestList.as_view(),

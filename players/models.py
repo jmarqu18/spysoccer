@@ -912,7 +912,7 @@ class Scoring(models.Model):
 
         verbose_name = "Scoring"
         verbose_name_plural = "Scorings"
-        ordering = ["scoring"]
+        ordering = ["-scoring"]
         get_latest_by = "-calculate_date"
 
     def __str__(self):
