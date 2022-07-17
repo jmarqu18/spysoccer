@@ -88,6 +88,8 @@
                         <span>Informes de jugador</span>
                     </a>
                 </li>
+
+                <li class="sidebar-title">Herramientas</li>
                 <li class="{% active 'scoring_request_list' %} sidebar-item">
                     <a href="{% url 'scoring_request_list' %}" class='sidebar-link'>
                         <span class="fa-fw select-all fas"></span>
@@ -100,26 +102,13 @@
                         <span>Análisis Similitud</span>
                     </a>
                 </li>
-                <li class="sidebar-title">Herramientas</li>
                 <li class="{% active 'scrapes_list' %} sidebar-item">
                     <a href="{% url 'scrapes_list' %}" class='sidebar-link'>
-                        <i class="bi bi-cloud-arrow-down-fill"></i>
+                        <span class="fa-fw select-all fas"></span>
                         <span>Fuentes de datos</span>
                     </a>
                 </li>
-                <li class="sidebar-item has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-calculator-fill"></i>
-                        <span>Utilidades</span>
-                    </a>
-                    <ul class="submenu ">
-                        <li class="{% active 'similarity_request' %} submenu-item">
-                            <a href="{% url 'similarity_request' %}">
-                                Similaridad
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+
 
                 {% endif %}
 

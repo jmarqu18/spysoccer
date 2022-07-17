@@ -62,6 +62,16 @@ class SimilarityRequestList(ListView):
     ordering = "-request_date"
 
 
+class SimilarityList(ListView):
+    model = Similarity
+    context_object_name = "objects_list"
+    template_name = "players/similarity_list.html"
+    ordering = "-request_date"
+
+    def get_queryset(self):
+        return Similarity.objects.filter(similarity_request=self.kwargs["pk"])
+
+
 def players_csv(request):
     today = date.today().strftime("%Y%m%d")
     filename = "{}_players.csv".format(today)

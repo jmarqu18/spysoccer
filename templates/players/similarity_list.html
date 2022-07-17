@@ -1,0 +1,87 @@
+<!-- templates/books/book_list.html -->
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Similitud de jugadores - SpySoccer{% endblock title %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'assets/css/pages/simple-datatables.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-9 order-md-1 order-last">
+                {% block titular %}{% endblock titular %}
+                {% with objects_list|first as last %}
+                <h2>Análisis de similitud realizado el {{ last.calculate_date }}</h2>
+                <p class="text-subtitle text-muted">Calculos realizados para la posición de <b>
+                        {{ last.similarity_request.index_used.position_norm }}</b> en la temporada
+                    <b>{{ last.similarity_request.season_request }}</b>
+                </p>
+
+                {% endwith %}
+            </div>
+            <div class="col-12 col-md-3 order-md-2 order-first">
+                <button class="btn float-start float-lg-end">
+                    <a class="btn icon icon-left btn-info" href="{% url 'similarity_request_list' %}">Volver al
+                        listado</a>
+                </button>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <p></p>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>Index usado</th>
+                            <th>Jugador similar</th>
+                            <th>Similitud</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for similarity in objects_list %}
+                        <tr>
+                            <td>{{ similarity.player }}</td>
+                            <td>{{ similarity.similarity_request.index_used }}</td>
+                            <td>{{ similarity.similar_player }}</td>
+                            <td>{{ similarity.similarity }}</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+
+            </div>
+            <div class="card-footer">
+                {% with objects_list|first as last2 %}
+                <h4>Métricas usadas en el cálculo:</h4>
+                <p>{% for key in last2.similarity_request.index_used.index_data.keys %}
+                    {{key}},
+                    {% endfor %}
+                </p>
+            </div>
+            {% endwith %}
+        </div>
+    </section>
+</div>
+
+
+{% block scripts %}
+
+
+<script src="{% static 'assets/js/extensions/simple-datatables.js' %}"></script>
+
+{% endblock scripts %}
+
+
+{% endblock content %}
