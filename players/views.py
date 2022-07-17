@@ -32,7 +32,7 @@ class PlayersListView(ListView):
 class PlayersPositionListView(ListView):
     model = Player
     context_object_name = "players_list"
-    template_name = "players/players_list_by_position.html"
+    template_name = "players/players_list.html"
 
     def get_queryset(self):
         return Player.objects.filter(position_norm=self.kwargs["position"])
